@@ -48,4 +48,6 @@ Use the commands in [Validation](README.md#validation), scoped to the change:
 
 For website publishing, follow the available Sites workflow, reuse the project identity in `.openai/hosting.json`, and preserve the current audience. Confirm terminal deployment success before reporting a live URL. Never record deployment credentials in source or Git configuration.
 
+This app is also independently self-hosted at wealth-me-up.codex074.com (pve1, outside Sites) — see [Self-hosted deployment](README.md#self-hosted-deployment-pve1) and `deploy/`. That instance does not receive a Sites publish automatically; ship changes to it with `deploy/redeploy.sh`. Keep that section current if the self-hosted setup changes.
+
 In the handoff, state what changed, what was verified, and any remaining limitation. Update `README.md` when product behavior or setup changes; keep this file focused on decisions future agents need.

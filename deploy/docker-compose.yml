@@ -1,0 +1,37 @@
+name: wealth-me-up
+
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: wealth-me-up-web
+    restart: unless-stopped
+    volumes:
+      - wealth_me_up_data:/data
+    networks: [internal]
+
+  proxy:
+    image: caddy:2-alpine
+    container_name: wealth-me-up-proxy
+    restart: unless-stopped
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on: [web]
+    networks: [internal]
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: wealth-me-up-cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN:?Set TUNNEL_TOKEN in deploy/.env}
+    depends_on: [proxy]
+    networks: [internal]
+
+networks:
+  internal:
+
+volumes:
+  wealth_me_up_data:

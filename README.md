@@ -33,3 +33,17 @@ npm run build
 ```
 
 Core files: `lib/portfolio.ts` (validation and accounting), `app/api/portfolio/route.ts` (owner-scoped persistence), `app/page.tsx` (dashboard), `app/portfolio-workspace.tsx` (records and forms).
+
+## Self-hosted deployment (pve1)
+
+Besides the OpenAI Sites publishing workflow (see AGENTS.md), the self-hosted deployment targets **wealth-me-up.codex074.com** on the owner's infrastructure. Setup is complete only when the dedicated tunnel is healthy, the hostname routes to the proxy, and authenticated save/reload has been verified.
+
+- **Where**: the `docker` LXC (103) on Proxmox host `pve1`, alongside other self-hosted apps (`pharmshift`, etc.). No app code changes — the same Cloudflare Workers build (`wrangler dev --local`) runs as a long-lived container, backed by a local SQLite-based D1 emulation on a Docker volume instead of Cloudflare's real D1.
+- **Access**: its own Cloudflare Tunnel (no ports opened on the host or router) gated by Cloudflare Access (sign-in restricted to the owner's email). A small Caddy container strips any client-supplied `oai-authenticated-user-*` headers and re-sets them from the Access-verified email, so `app/chatgpt-auth.ts` sees the same header contract it expects from OpenAI Sites — that file is untouched.
+- **Files**: see `deploy/` — `Dockerfile`, `docker-compose.yml`, `Caddyfile`, `entrypoint.sh` (runs the once-only D1 migration, then `wrangler dev`), `setup-wizard.sh` (one-time Cloudflare Tunnel + Access setup), `redeploy.sh` (ship new changes to pve1).
+- **To ship a change**: run `deploy/redeploy.sh` (needs SSH `root@pve1`). It packs the repo, rebuilds the image inside the LXC, and restarts the stack.
+- **Owner identity**: the D1 `portfolios.owner` key is the Access-verified email recorded in `deploy/.env` (`OWNER_EMAIL`) — this is a fresh, empty portfolio, not a migration of any prior Sites-hosted data.
+- **Known limitations**: `wrangler dev --local` is a dev server, not Cloudflare's production Workers runtime — acceptable for single-user private use, not for public traffic. `/signout-with-chatgpt` has no effect under Access; sign out via the Cloudflare Access session instead. Data lives only in the `wealth-me-up_wealth_me_up_data` Docker volume on pve1 — back it up separately.
+- **Required tunnel validation**: enable **Protect with Access** on the public route, using team `broad-sky-a556` and the AUD from the Wealth Me Up Access application. This verifies JWTs before forwarding. Caddy also rejects missing or unexpected email identities and overwrites identity headers. Email headers alone do not prove authentication. Never expose the app or proxy through a published Docker port or an unprotected tunnel route.
+- Keep `TUNNEL_TOKEN` and `OWNER_EMAIL` in ignored `deploy/.env` with mode `600`. The token belongs only to the dedicated `wealth-me-up` tunnel; do not reuse another app's token.
+- `entrypoint.sh` sets the Worker's external origin to `https://wealth-me-up.codex074.com`; preserve this when changing the proxy or runtime, or same-origin browser saves will fail. After deploying, run `docker compose exec web node deploy/smoke-test.mjs OWNER_EMAIL` from the remote `deploy/` directory, replacing `OWNER_EMAIL` with the configured address. This checks identity rejection and origin handling with invalid bodies, without writing financial records. Separately verify the public hostname requires Cloudflare Access and the owner's browser can save/reload.
