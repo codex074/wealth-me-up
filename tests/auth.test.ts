@@ -4,6 +4,7 @@ import {signToken,verifyToken,randomToken,base64UrlEncode,base64UrlDecode} from 
 import {serializeCookie,clearCookie,readCookie,redirectResponse} from '../lib/auth/http.ts';
 import {readAuthConfig,parseAllowedEmails,isAllowedEmail} from '../lib/auth/config.ts';
 import {safeRelativeReturnPath} from '../lib/auth/return-path.ts';
+import {createPkce,buildAuthorizationUrl,exchangeCode,decodeIdToken,validateIdTokenClaims} from '../lib/auth/google.ts';
 
 const SECRET='test-secret-at-least-32-bytes-long!!';
 
@@ -77,4 +78,51 @@ test('return_to is restricted to same-origin non-auth paths',()=>{
  assert.equal(safeRelativeReturnPath('/auth'),'/auth');
  assert.equal(safeRelativeReturnPath(null),'/');
  assert.equal(safeRelativeReturnPath('relative'),'/');
+});
+
+const CLAIMS={iss:'https://accounts.google.com',aud:'id',exp:2000,email_verified:true,email:'Owner@Example.com',name:'Owner',picture:'https://p/x.png'};
+
+test('authorization URL carries PKCE, state, and scopes',async()=>{
+ const {verifier,challenge}=await createPkce();
+ assert.notEqual(verifier,challenge);
+ assert.doesNotMatch(challenge,/[+/=]/);
+ const url=new URL(buildAuthorizationUrl({clientId:'id',redirectUri:'https://app/auth/google/callback',state:'st',codeChallenge:challenge}));
+ assert.equal(url.origin+url.pathname,'https://accounts.google.com/o/oauth2/v2/auth');
+ assert.equal(url.searchParams.get('client_id'),'id');
+ assert.equal(url.searchParams.get('redirect_uri'),'https://app/auth/google/callback');
+ assert.equal(url.searchParams.get('response_type'),'code');
+ assert.equal(url.searchParams.get('scope'),'openid email profile');
+ assert.equal(url.searchParams.get('state'),'st');
+ assert.equal(url.searchParams.get('code_challenge'),challenge);
+ assert.equal(url.searchParams.get('code_challenge_method'),'S256');
+ assert.equal(url.searchParams.get('prompt'),'select_account');
+});
+test('code exchange posts the expected form and returns the id token',async()=>{
+ let captured:{url:string,body:URLSearchParams}|null=null;
+ const fetchImpl=(async(input:RequestInfo|URL,init?:RequestInit)=>{captured={url:String(input),body:new URLSearchParams(String(init?.body))};return new Response(JSON.stringify({id_token:'a.b.c'}),{status:200});}) as typeof fetch;
+ const result=await exchangeCode({code:'c0de',verifier:'v',clientId:'id',clientSecret:'s',redirectUri:'https://app/cb'},fetchImpl);
+ assert.equal(result.idToken,'a.b.c');
+ assert.equal(captured!.url,'https://oauth2.googleapis.com/token');
+ assert.equal(captured!.body.get('grant_type'),'authorization_code');
+ assert.equal(captured!.body.get('code'),'c0de');
+ assert.equal(captured!.body.get('code_verifier'),'v');
+ assert.equal(captured!.body.get('client_id'),'id');
+ assert.equal(captured!.body.get('client_secret'),'s');
+ assert.equal(captured!.body.get('redirect_uri'),'https://app/cb');
+ const failing=(async()=>new Response('{"error":"bad"}',{status:400})) as typeof fetch;
+ await assert.rejects(exchangeCode({code:'c',verifier:'v',clientId:'id',clientSecret:'s',redirectUri:'r'},failing),/TOKEN_EXCHANGE_FAILED/);
+ const empty=(async()=>new Response('{}',{status:200})) as typeof fetch;
+ await assert.rejects(exchangeCode({code:'c',verifier:'v',clientId:'id',clientSecret:'s',redirectUri:'r'},empty),/TOKEN_EXCHANGE_FAILED/);
+});
+test('id token decoding and claim validation',()=>{
+ const encoded=Buffer.from(JSON.stringify(CLAIMS)).toString('base64url');
+ assert.deepEqual(decodeIdToken(`h.${encoded}.s`),CLAIMS);
+ assert.throws(()=>decodeIdToken('nope'));
+ assert.deepEqual(validateIdTokenClaims(CLAIMS,{clientId:'id',now:1000_000}),{email:'owner@example.com',name:'Owner',picture:'https://p/x.png'});
+ assert.deepEqual(validateIdTokenClaims({...CLAIMS,iss:'accounts.google.com',name:undefined,picture:undefined},{clientId:'id',now:1000_000}),{email:'owner@example.com',name:null,picture:null});
+ assert.throws(()=>validateIdTokenClaims({...CLAIMS,iss:'https://evil'},{clientId:'id',now:1000_000}),/INVALID_ID_TOKEN/);
+ assert.throws(()=>validateIdTokenClaims({...CLAIMS,aud:'other'},{clientId:'id',now:1000_000}),/INVALID_ID_TOKEN/);
+ assert.throws(()=>validateIdTokenClaims(CLAIMS,{clientId:'id',now:2000_000}),/INVALID_ID_TOKEN/);
+ assert.throws(()=>validateIdTokenClaims({...CLAIMS,email_verified:false},{clientId:'id',now:1000_000}),/INVALID_ID_TOKEN/);
+ assert.throws(()=>validateIdTokenClaims({...CLAIMS,email:''},{clientId:'id',now:1000_000}),/INVALID_ID_TOKEN/);
 });
