@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {signToken,verifyToken,randomToken,base64UrlEncode,base64UrlDecode} from '../lib/auth/session.ts';
 import {serializeCookie,clearCookie,readCookie,redirectResponse} from '../lib/auth/http.ts';
+import {readAuthConfig,parseAllowedEmails,isAllowedEmail} from '../lib/auth/config.ts';
+import {safeRelativeReturnPath} from '../lib/auth/return-path.ts';
 
 const SECRET='test-secret-at-least-32-bytes-long!!';
 
@@ -44,4 +46,35 @@ test('cookie helpers',()=>{
  assert.equal(r.headers.get('cache-control'),'no-store');
  assert.deepEqual(r.headers.getSetCookie(),['x=1; Path=/','y=2; Path=/']);
  assert.equal(redirectResponse('/',[],303).status,303);
+});
+
+const ENV={GOOGLE_CLIENT_ID:'id',GOOGLE_CLIENT_SECRET:'secret',SESSION_SECRET:SECRET,ALLOWED_EMAILS:'Owner@Example.com',APP_ORIGIN:'https://wealth-me-up.codex074.com/'};
+
+test('allowlist parsing is case-insensitive and ignores blanks',()=>{
+ const allowed=parseAllowedEmails(' A@x.com, ,b@Y.com ,');
+ assert.deepEqual([...allowed],['a@x.com','b@y.com']);
+ assert.ok(isAllowedEmail('B@y.COM',allowed));
+ assert.ok(!isAllowedEmail('c@y.com',allowed));
+ assert.equal(parseAllowedEmails(undefined).size,0);
+});
+test('auth config reads env and reports every missing variable',()=>{
+ const config=readAuthConfig(ENV);
+ assert.equal(config.appOrigin,'https://wealth-me-up.codex074.com');
+ assert.equal(config.redirectUri,'https://wealth-me-up.codex074.com/auth/google/callback');
+ assert.equal(config.secureCookies,true);
+ assert.ok(config.allowedEmails.has('owner@example.com'));
+ assert.equal(readAuthConfig({...ENV,APP_ORIGIN:'http://localhost:5173'}).secureCookies,false);
+ assert.throws(()=>readAuthConfig({...ENV,GOOGLE_CLIENT_SECRET:'',ALLOWED_EMAILS:undefined}),/AUTH_NOT_CONFIGURED: missing GOOGLE_CLIENT_SECRET, ALLOWED_EMAILS/);
+ assert.throws(()=>readAuthConfig({...ENV,ALLOWED_EMAILS:' , '}),/ALLOWED_EMAILS/);
+});
+test('return_to is restricted to same-origin non-auth paths',()=>{
+ assert.equal(safeRelativeReturnPath('/accounts?x=1#y'),'/accounts?x=1#y');
+ assert.equal(safeRelativeReturnPath('/'),'/');
+ assert.equal(safeRelativeReturnPath('https://evil.example/'),'/');
+ assert.equal(safeRelativeReturnPath('//evil.example'),'/');
+ assert.equal(safeRelativeReturnPath('/login'),'/');
+ assert.equal(safeRelativeReturnPath('/auth/google/callback?code=1'),'/');
+ assert.equal(safeRelativeReturnPath('/auth'),'/auth');
+ assert.equal(safeRelativeReturnPath(null),'/');
+ assert.equal(safeRelativeReturnPath('relative'),'/');
 });
