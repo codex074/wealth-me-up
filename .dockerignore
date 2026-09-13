@@ -12,3 +12,4 @@ dist
 coverage
 *.tsbuildinfo
 deploy/*.env
+.dev.vars*

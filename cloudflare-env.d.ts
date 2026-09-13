@@ -2,5 +2,10 @@ declare namespace Cloudflare {
   interface Env {
     DB?: D1Database;
     BUCKET?: R2Bucket;
+    GOOGLE_CLIENT_ID?: string;
+    GOOGLE_CLIENT_SECRET?: string;
+    SESSION_SECRET?: string;
+    ALLOWED_EMAILS?: string;
+    APP_ORIGIN?: string;
   }
 }
