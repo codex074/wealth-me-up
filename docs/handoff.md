@@ -10,7 +10,7 @@ Newest entry first. Each entry records what changed, what was verified, and what
 
 **Limits**: Import still supports Pi text PDFs only, max 10 MB and two pages; no OCR, options, other brokers, or other futures products. A closing lot with no matching imported/open ledger row still requires the user to enter its historical opening fee explicitly.
 
-**Deployment**: pending at this entry's creation.
+**Deployment**: Feature commit `bd10174` and deploy-build fix `da81f75` shipped to pve1 / LXC 103. The first Docker build was cgroup OOM-killed (exit 137) during the client build: LXC RAM is 4 GB, active swap inside the guest is 0, and the killed Node process used about 1.46 GB RSS while other services were active. Disk had 9.7 GB free and the container had no separate memory limit. `deploy/Dockerfile` now runs only the build with `NODE_OPTIONS=--max-old-space-size=768`; that value passed locally and the repeat remote build completed without stopping unrelated services. Post-deploy smoke test passed 7/7, public `/login` returned 200, and deployed parser/reader SHA-256 hashes match the local files. The live owner's portfolio was not modified.
 
 ## 2026-09-15 — Pi TFEX PDF import reviewed, hardened, committed, deployed (Claude)
 
