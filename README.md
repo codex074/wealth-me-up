@@ -12,7 +12,19 @@ node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1
 npm run dev
 ```
 
-Apply the initial migration only once in a new local database. Use the printed local URL. The portable preview's `/signin-with-chatgpt?return_to=/` signs in as the isolated development identity; production authentication is managed by Sites.
+Apply the initial migration only once in a new local database. Use the printed local URL.
+
+Sign-in is Google OAuth handled by the app. Create `.dev.vars` in the repo root (ignored by git) before `npm run dev`:
+
+```
+GOOGLE_CLIENT_ID=…
+GOOGLE_CLIENT_SECRET=…
+SESSION_SECRET=…        # openssl rand -base64 32
+ALLOWED_EMAILS=you@example.com
+APP_ORIGIN=http://localhost:5173
+```
+
+The Google OAuth client must list `http://localhost:5173/auth/google/callback` as an authorized redirect URI (`deploy/setup-wizard.sh` walks through creating it). Without `.dev.vars` the app still builds and serves `/login`, but signing in returns "ระบบยังไม่ได้ตั้งค่าการเข้าสู่ระบบ".
 
 ## Product behavior
 
@@ -22,28 +34,28 @@ Apply the initial migration only once in a new local database. Use the printed l
 - Asset prices are entered manually. If no valuation price has been saved, the latest recorded transaction price is used. There is no live market feed or broker trading connection.
 - TFEX journal supports long/short futures, whole contracts, user-selected contract multipliers, open/close dates, notes, fees, net realized P&L and win rate. It does not calculate margin or options payoff. TFEX results are kept separate from cash balances to avoid double counting.
 - Historical chart is a clearly labeled demonstration; real portfolios display the current valuation.
-- Durable records are stored in D1, scoped to the authenticated user. Revision checks prevent another tab from silently overwriting newer data. Failed saves preserve the open form.
+- Sign-in is Google only, restricted to the emails in `ALLOWED_EMAILS`; everything except `/login` requires a session. Sessions are signed cookies valid for 30 days; rotating `SESSION_SECRET` signs everyone out. Durable records are stored in D1, scoped to the signed-in email (lowercased). Revision checks prevent another tab from silently overwriting newer data. Failed saves preserve the open form.
 
 ## Validation
 
 ```sh
 node --experimental-strip-types --test tests/portfolio.test.ts
+node --experimental-strip-types --test tests/auth.test.ts
 node node_modules/typescript/bin/tsc --noEmit
 npm run build
 ```
 
-Core files: `lib/portfolio.ts` (validation and accounting), `app/api/portfolio/route.ts` (owner-scoped persistence), `app/page.tsx` (dashboard), `app/portfolio-workspace.tsx` (records and forms).
+Core files: `lib/portfolio.ts` (validation and accounting), `app/api/portfolio/route.ts` (owner-scoped persistence), `app/page.tsx` (dashboard), `app/portfolio-workspace.tsx` (records and forms), `app/auth.ts` and `lib/auth/` (Google login, sessions, allowlist).
 
 ## Self-hosted deployment (pve1)
 
-Besides the OpenAI Sites publishing workflow (see AGENTS.md), the self-hosted deployment targets **wealth-me-up.codex074.com** on the owner's infrastructure. Setup is complete only when the dedicated tunnel is healthy, the hostname routes to the proxy, and authenticated save/reload has been verified.
+The app runs at **wealth-me-up.codex074.com** on the owner's infrastructure. Setup is complete only when the tunnel is healthy, the app's own login page appears at the hostname, and an allowed Google account can sign in, save, and reload.
 
-- **Where**: the `docker` LXC (103) on Proxmox host `pve1`, alongside other self-hosted apps (`pharmshift`, etc.). No app code changes — the same Cloudflare Workers build (`wrangler dev --local`) runs as a long-lived container, backed by a local SQLite-based D1 emulation on a Docker volume instead of Cloudflare's real D1.
-- **Access**: its own Cloudflare Tunnel (no ports opened on the host or router) gated by Cloudflare Access (sign-in restricted to the owner's email). A small Caddy container strips any client-supplied `oai-authenticated-user-*` headers and re-sets them from the Access-verified email, so `app/chatgpt-auth.ts` sees the same header contract it expects from OpenAI Sites — that file is untouched.
-- **Files**: see `deploy/` — `Dockerfile`, `docker-compose.yml`, `Caddyfile`, `entrypoint.sh` (runs the once-only D1 migration, then `wrangler dev`), `setup-wizard.sh` (one-time Cloudflare Tunnel + Access setup), `redeploy.sh` (ship new changes to pve1).
-- **To ship a change**: run `deploy/redeploy.sh` (needs SSH `root@pve1`). It packs the repo, rebuilds the image inside the LXC, and restarts the stack.
-- **Owner identity**: the D1 `portfolios.owner` key is the Access-verified email recorded in `deploy/.env` (`OWNER_EMAIL`) — this is a fresh, empty portfolio, not a migration of any prior Sites-hosted data.
-- **Known limitations**: `wrangler dev --local` is a dev server, not Cloudflare's production Workers runtime — acceptable for single-user private use, not for public traffic. `/signout-with-chatgpt` has no effect under Access; sign out via the Cloudflare Access session instead. Data lives only in the `wealth-me-up_wealth_me_up_data` Docker volume on pve1 — back it up separately.
-- **Required tunnel validation**: enable **Protect with Access** on the public route, using team `broad-sky-a556` and the AUD from the Wealth Me Up Access application. This verifies JWTs before forwarding. Caddy also rejects missing or unexpected email identities and overwrites identity headers. Email headers alone do not prove authentication. Never expose the app or proxy through a published Docker port or an unprotected tunnel route.
-- Keep `TUNNEL_TOKEN` and `OWNER_EMAIL` in ignored `deploy/.env` with mode `600`. The token belongs only to the dedicated `wealth-me-up` tunnel; do not reuse another app's token.
-- `entrypoint.sh` sets the Worker's external origin to `https://wealth-me-up.codex074.com`; preserve this when changing the proxy or runtime, or same-origin browser saves will fail. After deploying, run `docker compose exec web node deploy/smoke-test.mjs OWNER_EMAIL` from the remote `deploy/` directory, replacing `OWNER_EMAIL` with the configured address. This checks identity rejection and origin handling with invalid bodies, without writing financial records. Separately verify the public hostname requires Cloudflare Access and the owner's browser can save/reload.
+- **Where**: the `docker` LXC (103) on Proxmox host `pve1`. The Cloudflare Workers build runs as a long-lived container (`wrangler dev --local`) backed by a SQLite-based D1 emulation on a Docker volume.
+- **Access**: a dedicated Cloudflare Tunnel forwards the hostname straight to `wealth-me-up-web:8787`. Cloudflare Access is **not** used; the app authenticates people with Google and only accepts emails in `ALLOWED_EMAILS`. Do not re-enable "Protect with Access" on the route or people will sign in twice.
+- **Files**: `deploy/Dockerfile`, `docker-compose.yml` (web + cloudflared), `entrypoint.sh` (writes `dist/server/.dev.vars` from the container environment, runs the once-only D1 migration, then `wrangler dev`), `setup-wizard.sh` (Google OAuth client, secrets, tunnel change), `redeploy.sh` (ship changes), `smoke-test.mjs`.
+- **Secrets**: `deploy/.env` (ignored, mode 600) holds `TUNNEL_TOKEN`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `SESSION_SECRET`, `ALLOWED_EMAILS`, `APP_ORIGIN`. Compose passes the auth values into the `web` container; `entrypoint.sh` turns them into the Worker's `.dev.vars`.
+- **To ship a change**: `deploy/redeploy.sh` (needs SSH `root@pve1`). To add a user: append the email to `ALLOWED_EMAILS` and redeploy. To sign everyone out: rotate `SESSION_SECRET` and redeploy.
+- **Owner identity**: `portfolios.owner` is the lowercased Google email. The portfolio created under Cloudflare Access used the same email, so it carries over.
+- **Verify after deploy**: from the remote `deploy/` directory run `docker compose exec web node deploy/smoke-test.mjs` (checks anonymous redirects, forged cookies, legacy header spoofing, cross-origin logout, and that Google login is configured, without writing records). Then sign in from a browser with an allowed account and with a non-allowed account (expect "ไม่มีสิทธิ์ใช้งาน").
+- **Known limitations**: `wrangler dev --local` is a dev server, not Cloudflare's production runtime; acceptable for private allowlisted use. Data lives only in the `wealth-me-up_wealth_me_up_data` Docker volume on pve1; back it up separately. Google's OAuth consent screen in "Testing" mode limits sign-in to listed test users and expires refresh tokens, which does not matter here because the app never calls Google after login.

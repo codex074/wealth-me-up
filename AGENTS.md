@@ -10,7 +10,7 @@ Before changing accounting behavior, read [Product behavior](README.md#product-b
 
 - For portfolio validation, cost basis, balances, or TFEX results, start with [lib/portfolio.ts](lib/portfolio.ts) and [tests/portfolio.test.ts](tests/portfolio.test.ts). Keep shared calculations there so forms, summaries, and server validation agree.
 - For dashboard presentation and navigation, use [app/page.tsx](app/page.tsx). For record lists and entry/edit forms, use [app/portfolio-workspace.tsx](app/portfolio-workspace.tsx). Reuse the installed primitives in `components/ui/` and the theme in [app/globals.css](app/globals.css).
-- For saved state and concurrency, read [app/api/portfolio/route.ts](app/api/portfolio/route.ts). For identity handling, read [app/chatgpt-auth.ts](app/chatgpt-auth.ts).
+- For saved state and concurrency, read [app/api/portfolio/route.ts](app/api/portfolio/route.ts). For identity handling, read [app/auth.ts](app/auth.ts) and `lib/auth/` (Google OAuth, signed sessions, allowlist); tests live in [tests/auth.test.ts](tests/auth.test.ts).
 - For database changes, inspect [db/schema.ts](db/schema.ts) and the existing `drizzle/` migrations. For local setup or sign-in, follow [Run locally](README.md#run-locally); the package scripts remain the source of truth for commands.
 
 ## Accounting rules
@@ -24,7 +24,7 @@ Before changing accounting behavior, read [Product behavior](README.md#product-b
 
 ## Persistence and access
 
-- Use authenticated server identity for ownership on every read and write. Preserve owner-scoped prepared SQL, server-side validation, and private access.
+- Use the signed session (`getUser` / `requireUser` in `app/auth.ts`) for ownership on every read and write; the owner key is the lowercased Google email. Never trust identity headers. Preserve owner-scoped prepared SQL, server-side validation, allowlist enforcement, and private access.
 - Preserve revision-based updates and conflict responses. A stale client must reload current data instead of silently overwriting another tab's changes.
 - Keep form input available after a failed save. Update the displayed saved state only after the server confirms success. Browser storage is reserved for device preferences, not authoritative financial records.
 - D1 currently stores a portfolio JSON payload per owner. When changing its shape, handle existing payloads with compatible defaults or an explicit migration; a SQL schema migration alone does not update JSON records.
@@ -35,7 +35,7 @@ Before changing accounting behavior, read [Product behavior](README.md#product-b
 
 Preserve the Thai interface, green palette, and responsive workspace layout. When changing forms or navigation, verify keyboard labels/focus, mobile menu dismissal, table scrolling, and recoverable save errors. Prices and charts must reflect their stated data source.
 
-The app uses Vinext's Next-compatible interface on Vite and Cloudflare Workers. Preserve the existing framework scripts, npm lockfile, and Sites build integration. Server code must work in the Worker runtime; local Node-only utilities belong outside request handlers.
+The app uses Vinext's Next-compatible interface on Vite and Cloudflare Workers. Preserve the existing framework scripts, npm lockfile, and Sites build integration. Server code must work in the Worker runtime; local Node-only utilities belong outside request handlers. Auth routes (`/auth/*`) and `/login` must stay outside the signed-in shell; all other pages go through `requireUser`.
 
 ## Verify and hand off
 
@@ -46,8 +46,6 @@ Use the commands in [Validation](README.md#validation), scoped to the change:
 - UI changes: exercise the changed flow at desktop and mobile sizes, including its empty and failure states when affected.
 - Documentation-only changes: verify referenced paths, commands, and consistency with the implementation; an application build or deployment is unnecessary.
 
-For website publishing, follow the available Sites workflow, reuse the project identity in `.openai/hosting.json`, and preserve the current audience. Confirm terminal deployment success before reporting a live URL. Never record deployment credentials in source or Git configuration.
-
-This app is also independently self-hosted at wealth-me-up.codex074.com (pve1, outside Sites) — see [Self-hosted deployment](README.md#self-hosted-deployment-pve1) and `deploy/`. That instance does not receive a Sites publish automatically; ship changes to it with `deploy/redeploy.sh`. Keep that section current if the self-hosted setup changes.
+The app is hosted only at wealth-me-up.codex074.com (pve1) — see [Self-hosted deployment](README.md#self-hosted-deployment-pve1) and `deploy/`. Ship changes with `deploy/redeploy.sh` and run the smoke test afterwards. Keep that section current if the setup changes. `.openai/hosting.json` remains only because the vendored build plugin copies it; OpenAI Sites publishing is no longer a target. Never record deployment credentials in source or Git configuration.
 
 In the handoff, state what changed, what was verified, and any remaining limitation. Update `README.md` when product behavior or setup changes; keep this file focused on decisions future agents need.
