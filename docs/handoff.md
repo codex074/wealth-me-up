@@ -2,6 +2,18 @@
 
 Newest entry first. Each entry records what changed, what was verified, and what is still open, so the next agent (Codex or Claude) can continue without re-deriving state. Append a new entry at the top when you finish a session that changes product behavior or infrastructure.
 
+## 2026-09-15 — Pi TFEX PDF import reviewed, hardened, committed, deployed (Claude)
+
+**Changed**: Codex's uncommitted import feature was committed as-is (`0736ce0`), then an independent review (no Critical findings) led to five fixes, one commit each (`6de7c67`..`937336f`):
+- A close row that has no exact match but an open lot of the same platform/symbol/side exists now blocks the import with a Thai error instead of silently adding a second closed record and leaving the manual lot open.
+- Same-day open+close in one document: the consumed open row is marked "รวมกับรายการปิดแล้ว" and the save button counts only rows that will be saved (`savedCount`).
+- `tfexImports` entries are now `{key, tradeIds}` (legacy bare strings still accepted and still block); a document can be re-imported once every trade it created has been deleted.
+- Total-line tolerance is `0.005 × rows + 0.01` (per-row `charge = commission + VAT` stays strict), so broker VAT rounding on multi-fill statements no longer rejects the file.
+- The document fingerprint is `sha256("pi:" + ownerEmail + ":" + documentNo)`; the salt flows `app/dashboard.tsx` → `TfexImportDialog salt` → `readTfexPdf` → `parsePiTfex`. No real imports existed before this change, so no migration.
+
+**Verified**: 34/34 tests (7 new, each RED before its fix), `tsc` clean, lint at the same 3 pre-existing errors, build clean; scoped re-review confirmed all five addressed with no new breakage. Deployed with `deploy/redeploy.sh`; pve1 source hashes match `937336f`; smoke test 7/7; owner's live portfolio (3 platforms, revision 3, no TFEX rows) loads.
+
+**Still open (non-blocking)**: no dedicated rounding test for the POSITION CLOSING total line; consumed preview rows hide the original entry price; `isEvalSupported:false` / `disableFontFace:true` not yet passed to PDF.js; if a CSP is ever added it must include `worker-src blob:`; the SSR bundle carries the 1.27 MB PDF worker chunk it never evaluates; `@napi-rs/canvas` optional binaries are installed in the image for nothing.
 
 ## 2026-09-14 — Pi TFEX PDF import (Codex)
 
