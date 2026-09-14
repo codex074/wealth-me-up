@@ -13,10 +13,12 @@ LXC_ID="103"
 REMOTE_APP_DIR="/opt/wealth-me-up"
 ENV_FILE="${REPO_ROOT}/deploy/.env"
 
-if [[ ! -f "$ENV_FILE" ]] || ! grep -q '^TUNNEL_TOKEN=' "$ENV_FILE"; then
-  echo "deploy/.env is missing TUNNEL_TOKEN — run deploy/setup-wizard.sh first." >&2
-  exit 1
-fi
+for key in TUNNEL_TOKEN GOOGLE_CLIENT_ID GOOGLE_CLIENT_SECRET SESSION_SECRET ALLOWED_EMAILS; do
+  if [[ ! -f "$ENV_FILE" ]] || ! grep -q "^${key}=." "$ENV_FILE"; then
+    echo "deploy/.env is missing ${key} — run deploy/setup-wizard.sh first." >&2
+    exit 1
+  fi
+done
 
 echo "▸ Packing repo..."
 TARBALL="$(mktemp -t wealth-me-up-deploy-XXXXXX.tar.gz)"
@@ -32,6 +34,7 @@ COPYFILE_DISABLE=1 tar -czf "$TARBALL" \
   --exclude='.codex' \
   --exclude='dist' \
   --exclude='.env*' \
+  --exclude='.dev.vars*' \
   -C "$REPO_ROOT" .
 
 echo "▸ Copying to pve1..."

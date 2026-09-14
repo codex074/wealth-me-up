@@ -7,17 +7,14 @@ services:
       dockerfile: deploy/Dockerfile
     container_name: wealth-me-up-web
     restart: unless-stopped
+    environment:
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:?Set GOOGLE_CLIENT_ID in deploy/.env}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:?Set GOOGLE_CLIENT_SECRET in deploy/.env}
+      - SESSION_SECRET=${SESSION_SECRET:?Set SESSION_SECRET in deploy/.env}
+      - ALLOWED_EMAILS=${ALLOWED_EMAILS:?Set ALLOWED_EMAILS in deploy/.env}
+      - APP_ORIGIN=${APP_ORIGIN:-https://wealth-me-up.codex074.com}
     volumes:
       - wealth_me_up_data:/data
-    networks: [internal]
-
-  proxy:
-    image: caddy:2-alpine
-    container_name: wealth-me-up-proxy
-    restart: unless-stopped
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-    depends_on: [web]
     networks: [internal]
 
   cloudflared:
@@ -27,7 +24,7 @@ services:
     command: tunnel --no-autoupdate run
     environment:
       - TUNNEL_TOKEN=${TUNNEL_TOKEN:?Set TUNNEL_TOKEN in deploy/.env}
-    depends_on: [proxy]
+    depends_on: [web]
     networks: [internal]
 
 networks:
