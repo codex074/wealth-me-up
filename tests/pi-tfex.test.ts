@@ -97,6 +97,23 @@ test('a legacy bare-string tfexImports entry still blocks re-import',async()=>{
  data.tfexImports=[s.key];
  assert.throws(()=>prepareTfexImport(data,s,'pi'),/บันทึกแล้ว/);
 });
+test('grand total tolerance scales with row count so VAT rounding across many rows is accepted, larger drift is not',async()=>{
+ const rows=Array.from({length:8},(_,i)=>`S50H26 BH-20260109-9000${i+1} L Open 1 905.00 0.00 5.00 0.35 0.00 5.35`).join('\n');
+ const build=(grand:string)=>`Pi Securities Public Company Limited
+Confirmation Note / Tax Invoice / Settlement Statement
+DN-20260109-99999
+Instrument Contract Long/ No. of Cost Premium/Settlement Commission and Charge
+Code No. Short Status Contract Price Amount Fees* VAT W/H Amount
+----------------
+${rows}
+------ ------ ---- ---- -----
+Total 0.00 40.00 2.80 0.00 42.80
+====== ====== ==== ==== =====
+Grand Total 0.00 40.00 2.80 0.00 ${grand}
+STATEMENT OF ACCOUNT`;
+ const accepted=await parsePiTfex(build('42.82'));assert.equal(accepted.rows.length,8);assert.ok(Math.abs(accepted.fees-42.8)<1e-8);
+ await assert.rejects(()=>parsePiTfex(build('43.80')));
+});
 test('old payloads remain compatible; import can atomically create a broker',async()=>{
  const data=blankPortfolio(),s=await parsePiTfex(statement);assert.equal(validatePortfolio(data).tfexImports,undefined);
  const next=prepareTfexImport(data,s,'__new_pi__',{0:'0'}).data;assert.equal(next.platforms.length,1);assert.equal(next.tfex[0].platform,next.platforms[0].id);assert.equal(data.platforms.length,0);

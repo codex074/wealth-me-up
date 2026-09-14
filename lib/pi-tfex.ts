@@ -14,6 +14,9 @@ const amounts = (value: string) => value.trim().split(/\s+/).map(v => {
   return numeric(v);
 });
 const equal = (a: number, b: number) => Math.abs(a - b) < 0.011;
+// Printed section/grand totals accumulate broker rounding (e.g. VAT computed per row on the
+// commission subtotal) that per-row equality is too tight for; scale the slack with row count.
+const equalTotal = (a: number, b: number, rows: number) => Math.abs(a - b) <= 0.005 * rows + 0.01;
 function date(value: string) {
   const [day, month, year] = value.split("/");
   const result = `${year}-${month}-${day}`;
@@ -50,7 +53,7 @@ export async function parsePiTfex(text: string): Promise<PiTfexStatement> {
   if (!executions.length) throw new Error("ไม่พบรายการเทรดในไฟล์");
   const total = amounts(lines[end].replace("Grand Total", ""));
   const fees = executions.reduce((sum, e) => sum + e.fee, 0);
-  if (total.length !== 5 || total[0] !== 0 || total[3] !== 0 || !equal(total[4], fees) || !equal(total[1] + total[2], fees)) throw new Error("ยอดรวมค่าธรรมเนียมใน PDF ไม่ตรงกับรายการ");
+  if (total.length !== 5 || total[0] !== 0 || total[3] !== 0 || !equalTotal(total[4], fees, executions.length) || !equalTotal(total[1] + total[2], fees, executions.length)) throw new Error("ยอดรวมค่าธรรมเนียมใน PDF ไม่ตรงกับรายการ");
   const rows: PiTfexRow[] = [];
   const closingStart = lines.indexOf("POSITION CLOSING");
   const closingEnd = lines.indexOf("STATEMENT OF ACCOUNT");
@@ -88,7 +91,7 @@ export async function parsePiTfex(text: string): Promise<PiTfexStatement> {
     const closingTotal = section.find(l => l.startsWith("Total "));
     if (positions.length) {
       const totals = closingTotal ? amounts(closingTotal.replace("Total", "")) : [];
-      if (totals.length !== 2 || !equal(totals[0], gross) || totals[1] !== 0) throw new Error("ยอดกำไรรวมของสถานะปิดไม่ตรงกัน");
+      if (totals.length !== 2 || !equalTotal(totals[0], gross, positions.length / 2) || totals[1] !== 0) throw new Error("ยอดกำไรรวมของสถานะปิดไม่ตรงกัน");
     }
   }
   for (const e of executions) {
