@@ -26,7 +26,7 @@ export async function GET(request:Request){
   const {idToken}=await exchangeCode({code,verifier:pending.verifier,clientId:config.clientId,clientSecret:config.clientSecret,redirectUri:config.redirectUri});
   const identity=validateIdTokenClaims(decodeIdToken(idToken),{clientId:config.clientId});
   if(!isAllowedEmail(identity.email,config.allowedEmails)){
-   console.warn("Google login denied: email not in allowlist");
+   console.warn("Google login denied: email not in allowlist",identity.email);
    return redirectResponse("/login?error=not_allowed",[clearOAuth,clearCookie(SESSION_COOKIE,secure)]);
   }
   const now=Date.now();

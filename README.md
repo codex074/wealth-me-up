@@ -34,7 +34,7 @@ The Google OAuth client must list `http://localhost:5173/auth/google/callback` a
 - Asset prices are entered manually. If no valuation price has been saved, the latest recorded transaction price is used. There is no live market feed or broker trading connection.
 - TFEX journal supports long/short futures, whole contracts, user-selected contract multipliers, open/close dates, notes, fees, net realized P&L and win rate. It does not calculate margin or options payoff. TFEX results are kept separate from cash balances to avoid double counting.
 - Historical chart is a clearly labeled demonstration; real portfolios display the current valuation.
-- Sign-in is Google only, restricted to the emails in `ALLOWED_EMAILS`; everything except `/login` requires a session. Sessions are signed cookies valid for 30 days; rotating `SESSION_SECRET` signs everyone out. Durable records are stored in D1, scoped to the signed-in email (lowercased). Revision checks prevent another tab from silently overwriting newer data. Failed saves preserve the open form.
+- Sign-in is Google only, restricted to the emails in `ALLOWED_EMAILS`; everything except `/login` and the `/auth/*` routes requires a session. Sessions are signed cookies valid for 30 days; rotating `SESSION_SECRET` signs everyone out. Durable records are stored in D1, scoped to the signed-in email (lowercased). Revision checks prevent another tab from silently overwriting newer data. Failed saves preserve the open form.
 
 ## Validation
 
@@ -45,7 +45,7 @@ node node_modules/typescript/bin/tsc --noEmit
 npm run build
 ```
 
-Core files: `lib/portfolio.ts` (validation and accounting), `app/api/portfolio/route.ts` (owner-scoped persistence), `app/page.tsx` (dashboard), `app/portfolio-workspace.tsx` (records and forms), `app/auth.ts` and `lib/auth/` (Google login, sessions, allowlist).
+Core files: `lib/portfolio.ts` (validation and accounting), `app/api/portfolio/route.ts` (owner-scoped persistence), `app/dashboard.tsx` (dashboard), `app/page.tsx` (sign-in gate), `app/portfolio-workspace.tsx` (records and forms), `app/auth.ts` and `lib/auth/` (Google login, sessions, allowlist).
 
 ## Self-hosted deployment (pve1)
 
@@ -57,5 +57,5 @@ The app runs at **wealth-me-up.codex074.com** on the owner's infrastructure. Set
 - **Secrets**: `deploy/.env` (ignored, mode 600) holds `TUNNEL_TOKEN`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `SESSION_SECRET`, `ALLOWED_EMAILS`, `APP_ORIGIN`. Compose passes the auth values into the `web` container; `entrypoint.sh` turns them into the Worker's `.dev.vars`.
 - **To ship a change**: `deploy/redeploy.sh` (needs SSH `root@pve1`). To add a user: append the email to `ALLOWED_EMAILS` and redeploy. To sign everyone out: rotate `SESSION_SECRET` and redeploy.
 - **Owner identity**: `portfolios.owner` is the lowercased Google email. The portfolio created under Cloudflare Access used the same email, so it carries over.
-- **Verify after deploy**: from the remote `deploy/` directory run `docker compose exec web node deploy/smoke-test.mjs` (checks anonymous redirects, forged cookies, legacy header spoofing, cross-origin logout, and that Google login is configured, without writing records). Then sign in from a browser with an allowed account and with a non-allowed account (expect "ไม่มีสิทธิ์ใช้งาน").
+- **Verify after deploy**: from the remote `deploy/` directory run `docker compose exec web node deploy/smoke-test.mjs` (checks anonymous redirects, forged cookies, legacy header spoofing, cross-origin logout, and that Google login is configured, without writing records). Then sign in from a browser with an allowed account and with a non-allowed account (expect "ไม่มีสิทธิ์ใช้งาน"). While the Google consent screen is in Testing mode, a second account must be listed as a test user there, or Google blocks it before the app's allowlist runs.
 - **Known limitations**: `wrangler dev --local` is a dev server, not Cloudflare's production runtime; acceptable for private allowlisted use. Data lives only in the `wealth-me-up_wealth_me_up_data` Docker volume on pve1; back it up separately. Google's OAuth consent screen in "Testing" mode limits sign-in to listed test users and expires refresh tokens, which does not matter here because the app never calls Google after login.

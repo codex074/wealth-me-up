@@ -9,7 +9,7 @@ Before changing accounting behavior, read [Product behavior](README.md#product-b
 ## Where to work
 
 - For portfolio validation, cost basis, balances, or TFEX results, start with [lib/portfolio.ts](lib/portfolio.ts) and [tests/portfolio.test.ts](tests/portfolio.test.ts). Keep shared calculations there so forms, summaries, and server validation agree.
-- For dashboard presentation and navigation, use [app/page.tsx](app/page.tsx). For record lists and entry/edit forms, use [app/portfolio-workspace.tsx](app/portfolio-workspace.tsx). Reuse the installed primitives in `components/ui/` and the theme in [app/globals.css](app/globals.css).
+- For dashboard presentation and navigation, use [app/dashboard.tsx](app/dashboard.tsx); [app/page.tsx](app/page.tsx) is only the sign-in gate that renders it. For record lists and entry/edit forms, use [app/portfolio-workspace.tsx](app/portfolio-workspace.tsx). Reuse the installed primitives in `components/ui/` and the theme in [app/globals.css](app/globals.css).
 - For saved state and concurrency, read [app/api/portfolio/route.ts](app/api/portfolio/route.ts). For identity handling, read [app/auth.ts](app/auth.ts) and `lib/auth/` (Google OAuth, signed sessions, allowlist); tests live in [tests/auth.test.ts](tests/auth.test.ts).
 - For database changes, inspect [db/schema.ts](db/schema.ts) and the existing `drizzle/` migrations. For local setup or sign-in, follow [Run locally](README.md#run-locally); the package scripts remain the source of truth for commands.
 

@@ -25,10 +25,10 @@ export default async function LoginPage({searchParams}:{searchParams:Promise<Sea
   if(e instanceof Error&&e.message.startsWith("AUTH_NOT_CONFIGURED"))error="unconfigured";
   else throw e;
  }
- const message=error?MESSAGES[error]??MESSAGES.failed:null;
+ const message=error?(Object.hasOwn(MESSAGES,error)?MESSAGES[error]:MESSAGES.failed):null;
  return <main className="login-shell">
   <section className="login-card">
-   <a className="brand" href="/"><span className="brand-icon"><ChartNoAxesCombined size={25}/></span><span>wealth<span className="brand-light"> me up</span><small>MAKE YOUR WEALTH GROW</small></span></a>
+   <div className="brand"><span className="brand-icon"><ChartNoAxesCombined size={25}/></span><span>wealth<span className="brand-light"> me up</span><small>MAKE YOUR WEALTH GROW</small></span></div>
    <h1>เข้าสู่ระบบ</h1>
    <p>บันทึกการลงทุน บัญชีเงินสด และผลเทรด TFEX ของคุณในที่เดียว</p>
    {message&&<div className="error-message" role="alert">{message}</div>}
