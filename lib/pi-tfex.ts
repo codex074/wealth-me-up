@@ -23,7 +23,13 @@ function date(value: string) {
   if (!Number.isFinite(Date.parse(result)) || new Date(result).toISOString().slice(0, 10) !== result) throw new Error("วันที่ใน PDF ไม่ถูกต้อง");
   return result;
 }
-export async function parsePiTfex(text: string): Promise<PiTfexStatement> {
+// Salted with the signed-in owner's email so a D1 row does not expose a brute-forceable
+// sha256("pi:DN-YYYYMMDD-NNNNN") — the Pi document number preimage space is small.
+export async function fingerprint(documentNo: string, salt: string) {
+  const hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`pi:${salt.trim().toLowerCase()}:${documentNo}`));
+  return Array.from(new Uint8Array(hash), b => b.toString(16).padStart(2, "0")).join("");
+}
+export async function parsePiTfex(text: string, salt: string): Promise<PiTfexStatement> {
   const lines = text.split(/\r?\n/).map(l => l.trim().replace(/\s+/g, " ")).filter(Boolean);
   const normalized = lines.join("\n");
   if (!/Pi Securities Public Company Limited/i.test(normalized) || !normalized.includes("Confirmation Note") || !normalized.includes("STATEMENT OF ACCOUNT")) throw new Error("รองรับเฉพาะใบยืนยันการซื้อขาย TFEX ของ Pi รูปแบบที่กำหนด (PDF ข้อความ ไม่ใช่ภาพสแกน)");
@@ -98,7 +104,6 @@ export async function parsePiTfex(text: string): Promise<PiTfexStatement> {
     if (e.status === "Close" && e.used !== e.qty) throw new Error("ไม่มีข้อมูลต้นทุนเปิดครบสำหรับรายการปิดในไฟล์");
     if (e.status === "Open") rows.unshift({symbol:e.symbol, side:e.side, qty:e.qty, entry:e.price, exit:null, date:tradingDate, closeDate:null, multiplier:200, fee:e.fee, gross:null});
   }
-  const hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`pi:${documentNo[0]}`));
-  const key = Array.from(new Uint8Array(hash), b => b.toString(16).padStart(2, "0")).join("");
+  const key = await fingerprint(documentNo[0], salt);
   return {key, date:tradingDate, rows, fees, gross};
 }

@@ -7,7 +7,7 @@ import type {PiTfexStatement} from "@/lib/pi-tfex";
 import {readTfexPdf} from "@/lib/read-tfex-pdf";
 const money=(value:number)=>value.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 
-export function TfexImportDialog({data,save,close}:{data:Portfolio;save:(next:Portfolio)=>Promise<void>;close:()=>void}) {
+export function TfexImportDialog({data,save,close,salt}:{data:Portfolio;save:(next:Portfolio)=>Promise<void>;close:()=>void;salt:string}) {
  const [file,setFile]=useState<File|null>(null),[password,setPassword]=useState("");
  const [statement,setStatement]=useState<PiTfexStatement|null>(null),[fees,setFees]=useState<Record<number,string>>({});
  const [platform,setPlatform]=useState(data.platforms.find(p=>/\bpi\b|พาย/i.test(p.name))?.id??"__new_pi__");
@@ -19,7 +19,7 @@ export function TfexImportDialog({data,save,close}:{data:Portfolio;save:(next:Po
  async function read(event:React.FormEvent){
   event.preventDefault();if(!file||lock.current)return;
   lock.current=true;setBusy(true);setError("");
-  try{const result=await readTfexPdf(file,password);setStatement(result);setPassword("");setFees({});requestAnimationFrame(()=>previewTitle.current?.focus());}
+  try{const result=await readTfexPdf(file,password,salt);setStatement(result);setPassword("");setFees({});requestAnimationFrame(()=>previewTitle.current?.focus());}
   catch(e){setError(e instanceof Error?e.message:"อ่าน PDF ไม่สำเร็จ กรุณาลองใหม่");}
   finally{lock.current=false;setBusy(false);}
  }

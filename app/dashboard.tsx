@@ -41,7 +41,7 @@ export function Dashboard({user}:{user:AppUser}){
  <>{page==="tfex"&&<div className="flex flex-wrap items-center gap-3 mb-5"><button className="btn primary" disabled={!loaded} onClick={()=>setImportOpen(true)}>นำเข้า PDF จาก Pi</button><span className="help-text">อ่านรายการอัตโนมัติ แล้วตรวจสอบก่อนบันทึก</span></div>}</>
  <DataViews page={page} data={data} open={open} money={money}/>
  <footer className="page-footer"><span><ShieldCheck size={14}/> พื้นที่ส่วนตัวสำหรับการลงทุนของคุณ</span><span>wealth me up <span className="footer-sprout">↗</span></span></footer>
- </main></div><EntryDialog modal={modal} close={()=>setModal(null)} data={data} save={save} open={open}/>{importOpen&&<TfexImportDialog data={data} save={save} close={()=>setImportOpen(false)}/>}<Toaster position="top-center" richColors/></SidebarProvider>
+ </main></div><EntryDialog modal={modal} close={()=>setModal(null)} data={data} save={save} open={open}/>{importOpen&&<TfexImportDialog data={data} save={save} close={()=>setImportOpen(false)} salt={user.email}/>}<Toaster position="top-center" richColors/></SidebarProvider>
 }
 
 function PencilIcon(){return <span className="quote-edit">✎</span>}

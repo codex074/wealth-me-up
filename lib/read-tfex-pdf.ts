@@ -1,6 +1,6 @@
 import {parsePiTfex} from "./pi-tfex";
 
-export async function readTfexPdf(file: File, password: string) {
+export async function readTfexPdf(file: File, password: string, salt: string) {
   if (!file.name.toLowerCase().endsWith(".pdf") || file.size === 0 || file.size > 10 * 1024 * 1024) throw new Error("เลือกไฟล์ PDF ขนาดไม่เกิน 10 MB");
   const pdfjs = await import("pdfjs-dist");
   const worker = await import("pdfjs-dist/build/pdf.worker.min.mjs?raw");
@@ -22,7 +22,7 @@ export async function readTfexPdf(file: File, password: string) {
       line.items.push({x, text: item.str});
     }
     const text = lines.sort((a,b) => b.y-a.y).map(l => l.items.sort((a,b) => a.x-b.x).map(i => i.text).join(" ")).join("\n");
-    return await parsePiTfex(text);
+    return await parsePiTfex(text, salt);
   } catch (error) {
     if (error instanceof Error && error.name === "PasswordException") throw new Error("PDF ต้องใช้รหัสผ่าน หรือรหัสผ่านไม่ถูกต้อง กรุณากรอกใหม่แล้วลองอีกครั้ง");
     if (error instanceof Error && /InvalidPDFException|UnknownErrorException/.test(error.name)) throw new Error("เปิด PDF ไม่ได้ ไฟล์อาจเสียหายหรือเป็นรูปแบบที่ยังไม่รองรับ");
