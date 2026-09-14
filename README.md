@@ -28,12 +28,12 @@ The Google OAuth client must list `http://localhost:5173/auth/google/callback` a
 
 ## Product behavior
 
-- Sample data is clearly marked and never automatically saved. Start your own portfolio with an empty account list.
+- A new portfolio starts empty; there is no sample data. Add platforms and cash accounts first, then record trades.
 - Account balances derive from opening balances, deposits, withdrawals, and purchases/sales including fees. Account currencies must match trades. Sales cannot exceed holdings.
 - Moving weighted-average cost includes purchase fees; realized profit subtracts allocated cost and sale fees. THB/USD aggregation uses a user-entered valuation exchange rate, not transaction-date FX profit accounting.
 - Asset prices are entered manually. If no valuation price has been saved, the latest recorded transaction price is used. There is no live market feed or broker trading connection.
 - TFEX journal supports long/short futures, whole contracts, user-selected contract multipliers, open/close dates, notes, fees, net realized P&L and win rate. It does not calculate margin or options payoff. TFEX results are kept separate from cash balances to avoid double counting.
-- Historical chart is a clearly labeled demonstration; real portfolios display the current valuation.
+- There is no historical chart yet; the growth panel shows the current valuation only.
 - Sign-in is Google only, restricted to the emails in `ALLOWED_EMAILS`; everything except `/login` and the `/auth/*` routes requires a session. Sessions are signed cookies valid for 30 days; rotating `SESSION_SECRET` signs everyone out. Durable records are stored in D1, scoped to the signed-in email (lowercased). Revision checks prevent another tab from silently overwriting newer data. Failed saves preserve the open form.
 
 ## Validation

@@ -4,7 +4,7 @@
 
 Build a private, Thai-first investment journal for assets, broker/platform records, multiple cash accounts, and TFEX futures. Keep user-facing copy and task updates in Thai; retain established English financial terms and code identifiers where appropriate.
 
-Before changing accounting behavior, read [Product behavior](README.md#product-behavior). Manual prices, the user-entered valuation exchange rate, and the demonstration chart are explicit product boundaries. Keep these distinctions visible when changing the interface.
+Before changing accounting behavior, read [Product behavior](README.md#product-behavior). Manual prices and the user-entered valuation exchange rate are explicit product boundaries; there is no sample data and no historical chart. Keep these distinctions visible when changing the interface.
 
 ## Where to work
 
@@ -20,7 +20,7 @@ Before changing accounting behavior, read [Product behavior](README.md#product-b
 - Keep amounts in their native account currency. Apply the valuation FX rate when aggregating; changing display currency or FX must not rewrite transaction amounts. Historical FX gains require a separate, explicitly requested model.
 - Preserve asset identity by symbol, currency, and platform. Identical tickers on different platforms must not merge accidentally.
 - Keep TFEX journal P&L separate from cash and portfolio totals. Use each record's direction, whole contract quantity, multiplier, and total fees. Open positions have no realized P&L and are excluded from win rate; break-even closes are not wins.
-- Keep demonstration data out of saved portfolios. Starting a real portfolio uses an empty ledger.
+- A new portfolio starts as an empty ledger. Keep synthetic fixtures in `tests/` only; never ship sample data in the app.
 
 ## Persistence and access
 
