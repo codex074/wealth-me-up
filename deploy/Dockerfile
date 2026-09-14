@@ -16,7 +16,9 @@ COPY scripts ./scripts
 RUN npm run install:ci
 
 COPY . .
-RUN npm run build
+# LXC 103 has 4 GB RAM and no active swap. Keep the Vite/Vinext build below the
+# cgroup OOM threshold while the existing app and the other services stay up.
+RUN NODE_OPTIONS=--max-old-space-size=768 npm run build
 
 COPY deploy/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
