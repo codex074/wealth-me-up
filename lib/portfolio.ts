@@ -72,6 +72,8 @@ export function prepareTfexImport(data:Portfolio, statement:PiTfexStatement, pla
   if(row.exit!==null){
    const candidates=next.tfex.filter(t=>sameOpen(t)&&t.exit===null);
    if(candidates.length>1)throw new Error(`พบสถานะเปิด ${row.symbol} ที่ตรงกันหลายรายการ กรุณารวม/แก้รายการเดิมก่อนนำเข้า`);
+   // A close with no exact-date/entry match must not silently fall through to "new position" if an open lot of the same symbol/side already exists — that lot would stay open forever.
+   if(!candidates.length&&next.tfex.some(t=>t.platform===platform&&t.symbol.toUpperCase()===row.symbol&&t.side===row.side&&t.exit===null))throw new Error(`มีสถานะเปิด ${row.symbol} ${row.side} ที่วันที่/ราคาเปิดไม่ตรงกับเอกสาร กรุณาแก้ไขรายการเดิมก่อนนำเข้า`);
    if(candidates.length===1){
     const existing=candidates[0];
     if(existing.qty<row.qty||existing.multiplier!==row.multiplier)throw new Error(`จำนวนหรือมูลค่าต่อจุดของสถานะเดิม ${row.symbol} ไม่ตรงกับ PDF`);

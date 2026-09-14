@@ -49,6 +49,15 @@ test('does not guess ambiguous lots, over-close or duplicate manual closes',asyn
  data.tfex=[{...closed,exit:null,closeDate:null,qty:1}];assert.throws(()=>prepareTfexImport(data,s,'pi'),/จำนวน/);
  data.tfex.push({...data.tfex[0],id:'second'});assert.throws(()=>prepareTfexImport(data,s,'pi'),/หลายรายการ/);
 });
+test('an open lot with a mismatched date or entry blocks the close instead of leaving it stale',async()=>{
+ const s=await parsePiTfex(statement),data=portfolio();
+ data.tfex.push({id:'existing',platform:'pi',symbol:'S50H26',side:'SHORT',qty:2,entry:900,exit:null,date:'2026-01-03',closeDate:null,multiplier:200,fee:0,notes:''});
+ assert.throws(()=>prepareTfexImport(data,s,'pi'),/วันที่\/ราคาเปิดไม่ตรงกับเอกสาร/);
+});
+test('a genuinely new position with no open lot of that symbol\/side still takes the opening-fee path',async()=>{
+ const s=await parsePiTfex(statement),data=portfolio();
+ assert.equal(prepareTfexImport(data,s,'pi').needsFees,true);
+});
 test('old payloads remain compatible; import can atomically create a broker',async()=>{
  const data=blankPortfolio(),s=await parsePiTfex(statement);assert.equal(validatePortfolio(data).tfexImports,undefined);
  const next=prepareTfexImport(data,s,'__new_pi__',{0:'0'}).data;assert.equal(next.platforms.length,1);assert.equal(next.tfex[0].platform,next.platforms[0].id);assert.equal(data.platforms.length,0);
