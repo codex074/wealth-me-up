@@ -33,6 +33,9 @@ The Google OAuth client must list `http://localhost:5173/auth/google/callback` a
 - Moving weighted-average cost includes purchase fees; realized profit subtracts allocated cost and sale fees. THB/USD aggregation uses a user-entered valuation exchange rate, not transaction-date FX profit accounting.
 - Asset prices are entered manually. If no valuation price has been saved, the latest recorded transaction price is used. There is no live market feed or broker trading connection.
 - TFEX journal supports long/short futures, whole contracts, user-selected contract multipliers, open/close dates, notes, fees, net realized P&L and win rate. It does not calculate margin or options payoff. TFEX results are kept separate from cash balances to avoid double counting.
+- TFEX PDF import: open **บันทึกการเทรด TFEX → นำเข้า PDF จาก Pi**, select a PDF, enter its password if required, review the rows and choose a broker (or create Pi Securities with the import), then save. Version 1 accepts Pi text-based, one-page daily confirmations up to 10 MB for S50 quarterly futures only (200 THB/point); other brokers, scanned PDFs, multi-page statements, options and other contracts are rejected with an explanation. Files and passwords are processed in the browser with bundled PDF.js; neither is uploaded or retained.
+- The importer reconciles closing pairs and checks gross P&L, quantities, commission + VAT, and document totals before accepting the entire file. A buy-to-close is a SHORT position. A unique matching open journal record is consumed (or split for a partial close) with its proportional opening fee and notes preserved. Ambiguous matches, insufficient existing quantities and possible manual duplicates require correcting the ledger first. Import statements in trading-date order; an older opening statement cannot recreate an already closed lot.
+- A closing statement does not supply historical opening fees. If no matching open record exists, each closing row requires an explicitly entered opening fee (including VAT; enter 0 only if appropriate). Net P&L remains unavailable in preview until those fees are entered. Import never changes cash or margin balances. A SHA-256 fingerprint of the Pi document number is saved in optional `tfexImports` metadata to block repeat imports even after renaming the file or editing its records. Existing JSON payloads without that field stay compatible; no SQL migration is needed. Review before saving; failed saves retain the preview and inputs, and stale revisions still require reloading the latest portfolio.
 - There is no historical chart yet; the growth panel shows the current valuation only.
 - Sign-in is Google only, restricted to the emails in `ALLOWED_EMAILS`; everything except `/login` and the `/auth/*` routes requires a session. Sessions are signed cookies valid for 30 days; rotating `SESSION_SECRET` signs everyone out. Durable records are stored in D1, scoped to the signed-in email (lowercased). Revision checks prevent another tab from silently overwriting newer data. Failed saves preserve the open form.
 
@@ -41,6 +44,7 @@ The Google OAuth client must list `http://localhost:5173/auth/google/callback` a
 ```sh
 node --experimental-strip-types --test tests/portfolio.test.ts
 node --experimental-strip-types --test tests/auth.test.ts
+node --experimental-strip-types --test tests/pi-tfex.test.ts
 node node_modules/typescript/bin/tsc --noEmit
 npm run build
 ```

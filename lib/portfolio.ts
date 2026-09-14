@@ -1,4 +1,5 @@
 import {z} from "zod";
+import type {PiTfexStatement} from "./pi-tfex.ts";
 const text=z.string().trim().min(1).max(120);
 const id=z.string().min(1).max(80);
 const notes=z.string().max(2000);
@@ -11,7 +12,7 @@ export const accountSchema=z.object({id,name:text,bank:text,number:z.string().ma
 export const tradeSchema=z.object({id,symbol:text,name:text,type:z.enum(["หุ้นสหรัฐฯ","หุ้นไทย","กองทุน","อื่นๆ"]),platform:id,account:id,side:z.enum(["BUY","SELL"]),currency,qty:positive,price:positive,fee:nonnegative,date,notes});
 export const tfexSchema=z.object({id,symbol:text,platform:id,side:z.enum(["LONG","SHORT"]),qty:positive.int(),entry:positive,exit:positive.nullable(),multiplier:positive,fee:nonnegative,date,closeDate:date.nullable(),notes}).refine(v=>v.exit===null?v.closeDate===null:!!v.closeDate&&v.closeDate>=v.date,"วันที่ปิดต้องไม่ก่อนวันที่เปิด");
 export const cashSchema=z.object({id,account:id,side:z.enum(["DEPOSIT","WITHDRAW"]),amount:positive,date,notes});
-export const stateSchema=z.object({platforms:z.array(platformSchema).max(300),accounts:z.array(accountSchema).max(300),trades:z.array(tradeSchema).max(10000),tfex:z.array(tfexSchema).max(10000),cash:z.array(cashSchema).max(10000),quotes:z.record(z.string().max(200),nonnegative),fx:positive});
+export const stateSchema=z.object({platforms:z.array(platformSchema).max(300),accounts:z.array(accountSchema).max(300),trades:z.array(tradeSchema).max(10000),tfex:z.array(tfexSchema).max(10000),tfexImports:z.array(z.string().regex(/^[a-f0-9]{64}$/)).max(10000).optional(),cash:z.array(cashSchema).max(10000),quotes:z.record(z.string().max(200),nonnegative),fx:positive});
 export type Portfolio=z.infer<typeof stateSchema>;
 export type Trade=z.infer<typeof tradeSchema>;
 export type Tfex=z.infer<typeof tfexSchema>;
@@ -40,6 +41,7 @@ export function summarize(data:Portfolio){
 export function validatePortfolio(input:unknown):Portfolio{
  const d=stateSchema.parse(input);
  for(const list of [d.platforms,d.accounts,d.trades,d.tfex,d.cash])if(new Set(list.map(x=>x.id)).size!==list.length)throw new Error("มีรหัสรายการซ้ำ");
+ if(new Set(d.tfexImports??[]).size!==(d.tfexImports??[]).length)throw new Error("มีเอกสาร TFEX นำเข้าซ้ำ");
  const platforms=new Set(d.platforms.map(x=>x.id)),accounts=new Map(d.accounts.map(x=>[x.id,x]));
  for(const t of d.trades){if(!platforms.has(t.platform)||!accounts.has(t.account))throw new Error("ไม่พบบัญชีหรือแพลตฟอร์มที่เลือก");if(accounts.get(t.account)!.currency!==t.currency)throw new Error("สกุลเงินของรายการต้องตรงกับบัญชี");}
  for(const t of d.tfex)if(!platforms.has(t.platform))throw new Error("ไม่พบโบรกเกอร์ TFEX");
@@ -47,4 +49,49 @@ export function validatePortfolio(input:unknown):Portfolio{
  const result=summarize(d);
  for(const [a,b] of result.balances)if(b<-.005)throw new Error(`เงินในบัญชี ${accounts.get(a)?.name} ไม่เพียงพอ กรุณาตรวจสอบยอดตั้งต้นหรือฝากเงินเพิ่ม`);
  return d;
+}
+
+/** Reconcile against the current ledger before preview and again before saving.
+ * A close consumes a unique matching open lot, preserving fees on a partial close.
+ * Ambiguous/manual duplicates require resolution instead of silently guessing.
+ */
+export function prepareTfexImport(data:Portfolio, statement:PiTfexStatement, platform:string, openingFees:Record<number,string>={}) {
+ if((data.tfexImports??[]).includes(statement.key))throw new Error("ไฟล์นี้บันทึกแล้ว ไม่สามารถนำเข้าซ้ำได้ แม้เปลี่ยนชื่อไฟล์หรือโบรกเกอร์");
+ const next=structuredClone(data);
+ if(platform==="__new_pi__"){
+  platform=crypto.randomUUID();
+  next.platforms.push({id:platform,name:"Pi Securities",kind:"โบรกเกอร์",notes:""});
+ }
+ if(!next.platforms.some(p=>p.id===platform))throw new Error("กรุณาเลือกโบรกเกอร์");
+ const preview: {trade:Tfex; openingFee:number; needsFee:boolean; matched:boolean}[]=[];
+ for(const [index,row] of statement.rows.entries()){
+  const sameOpen=(t:Tfex)=>t.platform===platform&&t.symbol.toUpperCase()===row.symbol&&t.side===row.side&&t.date===row.date&&t.entry===row.entry;
+  // Inspect the saved ledger, not earlier rows of this same document (identical fills are valid).
+  if(data.tfex.some(t=>sameOpen(t)&&(row.exit===null||(t.exit===row.exit&&t.closeDate===row.closeDate))))throw new Error(`พบรายการเดิมที่อาจซ้ำกับ ${row.symbol} วันที่ ${row.date} กรุณาตรวจหรือแก้รายการเดิมก่อนนำเข้า`);
+  let openingFee=0, needsFee=false, matched=false;
+  if(row.exit!==null){
+   const candidates=next.tfex.filter(t=>sameOpen(t)&&t.exit===null);
+   if(candidates.length>1)throw new Error(`พบสถานะเปิด ${row.symbol} ที่ตรงกันหลายรายการ กรุณารวม/แก้รายการเดิมก่อนนำเข้า`);
+   if(candidates.length===1){
+    const existing=candidates[0];
+    if(existing.qty<row.qty||existing.multiplier!==row.multiplier)throw new Error(`จำนวนหรือมูลค่าต่อจุดของสถานะเดิม ${row.symbol} ไม่ตรงกับ PDF`);
+    openingFee=Math.round(existing.fee*100*row.qty/existing.qty)/100;
+    matched=true;
+    if(existing.qty===row.qty)next.tfex=next.tfex.filter(t=>t.id!==existing.id);
+    else {existing.qty-=row.qty;existing.fee=Math.round((existing.fee-openingFee)*100)/100;}
+    const trade:Tfex={...row,id:crypto.randomUUID(),platform,fee:Math.round((openingFee+row.fee)*100)/100,notes:existing.notes};
+    next.tfex.push(trade);preview.push({trade,openingFee,needsFee,matched});continue;
+   }
+   const input=openingFees[index];
+   needsFee=input===undefined||input.trim()==="";
+   openingFee=needsFee?0:Number(input);
+   if(!Number.isFinite(openingFee)||openingFee<0||openingFee>1e12)throw new Error("ค่าธรรมเนียมเปิดต้องเป็นตัวเลขตั้งแต่ 0 ขึ้นไป");
+  }
+  const {gross: _gross,...fields}=row;
+  void _gross;
+  const trade:Tfex={...fields,id:crypto.randomUUID(),platform,fee:Math.round((openingFee+row.fee)*100)/100,notes:"นำเข้าจากใบยืนยัน Pi"};
+  next.tfex.push(trade);preview.push({trade,openingFee,needsFee,matched});
+ }
+ next.tfexImports=[...(next.tfexImports??[]),statement.key];
+ return {data:validatePortfolio(next),rows:preview,needsFees:preview.some(r=>r.needsFee)};
 }

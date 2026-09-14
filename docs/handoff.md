@@ -2,6 +2,19 @@
 
 Newest entry first. Each entry records what changed, what was verified, and what is still open, so the next agent (Codex or Claude) can continue without re-deriving state. Append a new entry at the top when you finish a session that changes product behavior or infrastructure.
 
+
+## 2026-09-14 — Pi TFEX PDF import (Codex)
+
+**Changed**: Added `บันทึกการเทรด TFEX → นำเข้า PDF จาก Pi` with password input, browser-only PDF.js extraction, review, broker selection/atomic Pi creation, explicit missing opening fees, and one revision-checked save. `lib/pi-tfex.ts` strictly parses one-page Pi text confirmations for quarterly S50 futures and reconciles buy/sell-to-close direction, paired entries, contract counts, gross P&L and fees including VAT. `prepareTfexImport` in `lib/portfolio.ts` consumes a unique matching open lot, preserves notes, and proportionally allocates opening fees on partial closes. Import leaves cash untouched. Optional `tfexImports` fingerprints block repeat documents; old payloads need no migration. PDF/password/customer identifiers are not persisted.
+
+**Verified locally**: 27 accounting/parser/auth tests; TypeScript; production build; real supplied encrypted PDF read-only (three SHORT closures with reconciled totals). Synthetic encrypted PDF browser flows in both Vite dev and the local production build: wrong-password recovery, explicit opening fees, 503 retention/retry, real local D1 save/reload, stale revision 409, duplicate re-import after reload, unsupported multi-page rejection, desktop/mobile layout, horizontal table scroll, menu dismissal and Escape. No real portfolio was imported. Lint remains at the same three pre-existing errors recorded below.
+
+**Implementation note**: PDF.js worker is lazy-loaded as raw packaged source into a Blob worker. Vite's dev rewriting of a worker URL imported its window-dependent HMR client, causing an overlay and fake-worker fallback; raw source removes that injection. Production build reports the expected large lazy PDF worker chunk (loaded only when reading a PDF).
+
+**Limits**: Pi, text PDF, one page, max 10 MB, quarterly S50 futures only. No OCR/options/other brokers or multipage layouts yet. Missing opening fees must be explicitly entered; do not assume the daily close fee includes historical opening fees. Import in date order. Ambiguous lots, incompatible existing quantities and possible manual duplicates stop the entire import for ledger correction. Fingerprints remain after editing imported trades; corrected/reissued versions of the same document are blocked for manual review.
+
+**Deployment**: shipped the current working tree with `deploy/redeploy.sh` to pve1 / LXC 103. Post-deploy `docker compose exec -T web node deploy/smoke-test.mjs` passed 7/7; public `/login` returned 200. Authenticated import/save was exercised on the local production build with synthetic owners, not against the real owner's live portfolio. Source changes are uncommitted in this checkout. Temporary extracted customer PDF text/images and local synthetic test rows were removed.
+
 ## 2026-09-14 — Google login replaces Cloudflare Access; sample data removed (Claude)
 
 **Live state right now**
