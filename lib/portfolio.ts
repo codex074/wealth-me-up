@@ -63,7 +63,11 @@ export function prepareTfexImport(data:Portfolio, statement:PiTfexStatement, pla
   next.platforms.push({id:platform,name:"Pi Securities",kind:"โบรกเกอร์",notes:""});
  }
  if(!next.platforms.some(p=>p.id===platform))throw new Error("กรุณาเลือกโบรกเกอร์");
- const preview: {trade:Tfex; openingFee:number; needsFee:boolean; matched:boolean}[]=[];
+ const preview: {trade:Tfex; openingFee:number; needsFee:boolean; matched:boolean; consumed:boolean}[]=[];
+ // Track trades this same import produced, so a later row in the same document that fully
+ // consumes one (a same-day open immediately closed) can mark the earlier preview row consumed
+ // instead of leaving a phantom entry that will not actually be saved.
+ const producedAt=new Map<string,number>();
  for(const [index,row] of statement.rows.entries()){
   const sameOpen=(t:Tfex)=>t.platform===platform&&t.symbol.toUpperCase()===row.symbol&&t.side===row.side&&t.date===row.date&&t.entry===row.entry;
   // Inspect the saved ledger, not earlier rows of this same document (identical fills are valid).
@@ -79,10 +83,12 @@ export function prepareTfexImport(data:Portfolio, statement:PiTfexStatement, pla
     if(existing.qty<row.qty||existing.multiplier!==row.multiplier)throw new Error(`จำนวนหรือมูลค่าต่อจุดของสถานะเดิม ${row.symbol} ไม่ตรงกับ PDF`);
     openingFee=Math.round(existing.fee*100*row.qty/existing.qty)/100;
     matched=true;
-    if(existing.qty===row.qty)next.tfex=next.tfex.filter(t=>t.id!==existing.id);
-    else {existing.qty-=row.qty;existing.fee=Math.round((existing.fee-openingFee)*100)/100;}
+    if(existing.qty===row.qty){
+     next.tfex=next.tfex.filter(t=>t.id!==existing.id);
+     if(producedAt.has(existing.id))preview[producedAt.get(existing.id)!].consumed=true;
+    } else {existing.qty-=row.qty;existing.fee=Math.round((existing.fee-openingFee)*100)/100;}
     const trade:Tfex={...row,id:crypto.randomUUID(),platform,fee:Math.round((openingFee+row.fee)*100)/100,notes:existing.notes};
-    next.tfex.push(trade);preview.push({trade,openingFee,needsFee,matched});continue;
+    next.tfex.push(trade);producedAt.set(trade.id,preview.length);preview.push({trade,openingFee,needsFee,matched,consumed:false});continue;
    }
    const input=openingFees[index];
    needsFee=input===undefined||input.trim()==="";
@@ -92,8 +98,8 @@ export function prepareTfexImport(data:Portfolio, statement:PiTfexStatement, pla
   const {gross: _gross,...fields}=row;
   void _gross;
   const trade:Tfex={...fields,id:crypto.randomUUID(),platform,fee:Math.round((openingFee+row.fee)*100)/100,notes:"นำเข้าจากใบยืนยัน Pi"};
-  next.tfex.push(trade);preview.push({trade,openingFee,needsFee,matched});
+  next.tfex.push(trade);producedAt.set(trade.id,preview.length);preview.push({trade,openingFee,needsFee,matched,consumed:false});
  }
  next.tfexImports=[...(next.tfexImports??[]),statement.key];
- return {data:validatePortfolio(next),rows:preview,needsFees:preview.some(r=>r.needsFee)};
+ return {data:validatePortfolio(next),rows:preview,needsFees:preview.some(r=>r.needsFee),savedCount:preview.filter(r=>!r.consumed).length};
 }

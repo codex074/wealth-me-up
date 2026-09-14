@@ -21,6 +21,25 @@ Trade Date Code Status Long Short Cost Price Contract Futures Options
 Total -2,000.00 0.00
 STATEMENT OF ACCOUNT`;
 const portfolio=()=>({...blankPortfolio(),platforms:[{id:'pi',name:'Pi test',kind:'โบรกเกอร์' as const,notes:''}]});
+// Same trading date open + close (day trade): the execution table has both an Open and a Close row for one round trip.
+const sameDayRoundTrip=`Pi Securities Public Company Limited
+Confirmation Note / Tax Invoice / Settlement Statement
+DN-20260109-99999
+Instrument Contract Long/ No. of Cost Premium/Settlement Commission and Charge
+Code No. Short Status Contract Price Amount Fees* VAT W/H Amount
+----------------
+S50H26 BH-20260109-90001 S Open 2 900.00 0.00 40.00 2.80 0.00 42.80
+S50H26 BH-20260109-90002 L Close 2 905.00 0.00 40.00 2.80 0.00 42.80
+------ ------ ---- ---- -----
+Total 0.00 80.00 5.60 0.00 85.60
+====== ====== ==== ==== =====
+Grand Total 0.00 80.00 5.60 0.00 85.60
+POSITION CLOSING
+Trade Date Code Status Long Short Cost Price Contract Futures Options
+09/01/2026 S50H26 0 2 900.00 2
+09/01/2026 S50H26 C 2 0 905.00 2 -2,000.00
+Total -2,000.00 0.00
+STATEMENT OF ACCOUNT`;
 test('Pi buy-to-close means SHORT; checks gross, VAT, dates and whole contracts',async()=>{
  const s=await parsePiTfex(statement);assert.equal(s.rows.length,1);assert.deepEqual(s.rows[0],{symbol:'S50H26',side:'SHORT',qty:2,entry:900,exit:905,date:'2026-01-02',closeDate:'2026-01-09',multiplier:200,fee:42.8,gross:-2000});assert.equal(s.fees,42.8);assert.equal(s.gross,-2000);
 });
@@ -57,6 +76,13 @@ test('an open lot with a mismatched date or entry blocks the close instead of le
 test('a genuinely new position with no open lot of that symbol\/side still takes the opening-fee path',async()=>{
  const s=await parsePiTfex(statement),data=portfolio();
  assert.equal(prepareTfexImport(data,s,'pi').needsFees,true);
+});
+test('a same-day open+close pair leaves no phantom preview row and the saved count matches what is kept',async()=>{
+ const s=await parsePiTfex(sameDayRoundTrip);assert.equal(s.rows.length,2);
+ const result=prepareTfexImport(portfolio(),s,'pi',{});
+ assert.equal(result.data.tfex.length,1);assert.equal(result.data.tfex[0].exit,905);
+ assert.equal(result.savedCount,1);
+ assert.equal(result.rows.filter(r=>!r.consumed).length,1);
 });
 test('old payloads remain compatible; import can atomically create a broker',async()=>{
  const data=blankPortfolio(),s=await parsePiTfex(statement);assert.equal(validatePortfolio(data).tfexImports,undefined);
