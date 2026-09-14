@@ -84,6 +84,19 @@ test('a same-day open+close pair leaves no phantom preview row and the saved cou
  assert.equal(result.savedCount,1);
  assert.equal(result.rows.filter(r=>!r.consumed).length,1);
 });
+test('deleting every trade an import produced allows the same document to be re-imported',async()=>{
+ const s=await parsePiTfex(statement);
+ const imported=prepareTfexImport(portfolio(),s,'pi',{0:'0'}).data;
+ assert.throws(()=>prepareTfexImport(imported,s,'pi',{0:'0'}),/บันทึกแล้ว/);
+ const deleted={...imported,tfex:[]};
+ const reimported=prepareTfexImport(deleted,s,'pi',{0:'0'});
+ assert.equal(reimported.needsFees,false);assert.equal(reimported.data.tfex.length,1);
+});
+test('a legacy bare-string tfexImports entry still blocks re-import',async()=>{
+ const s=await parsePiTfex(statement),data=portfolio();
+ data.tfexImports=[s.key];
+ assert.throws(()=>prepareTfexImport(data,s,'pi'),/บันทึกแล้ว/);
+});
 test('old payloads remain compatible; import can atomically create a broker',async()=>{
  const data=blankPortfolio(),s=await parsePiTfex(statement);assert.equal(validatePortfolio(data).tfexImports,undefined);
  const next=prepareTfexImport(data,s,'__new_pi__',{0:'0'}).data;assert.equal(next.platforms.length,1);assert.equal(next.tfex[0].platform,next.platforms[0].id);assert.equal(data.platforms.length,0);

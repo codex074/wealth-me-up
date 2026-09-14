@@ -12,11 +12,17 @@ export const accountSchema=z.object({id,name:text,bank:text,number:z.string().ma
 export const tradeSchema=z.object({id,symbol:text,name:text,type:z.enum(["หุ้นสหรัฐฯ","หุ้นไทย","กองทุน","อื่นๆ"]),platform:id,account:id,side:z.enum(["BUY","SELL"]),currency,qty:positive,price:positive,fee:nonnegative,date,notes});
 export const tfexSchema=z.object({id,symbol:text,platform:id,side:z.enum(["LONG","SHORT"]),qty:positive.int(),entry:positive,exit:positive.nullable(),multiplier:positive,fee:nonnegative,date,closeDate:date.nullable(),notes}).refine(v=>v.exit===null?v.closeDate===null:!!v.closeDate&&v.closeDate>=v.date,"วันที่ปิดต้องไม่ก่อนวันที่เปิด");
 export const cashSchema=z.object({id,account:id,side:z.enum(["DEPOSIT","WITHDRAW"]),amount:positive,date,notes});
-export const stateSchema=z.object({platforms:z.array(platformSchema).max(300),accounts:z.array(accountSchema).max(300),trades:z.array(tradeSchema).max(10000),tfex:z.array(tfexSchema).max(10000),tfexImports:z.array(z.string().regex(/^[a-f0-9]{64}$/)).max(10000).optional(),cash:z.array(cashSchema).max(10000),quotes:z.record(z.string().max(200),nonnegative),fx:positive});
+const importKeyPattern=/^[a-f0-9]{64}$/;
+// Legacy entries are a bare key (always blocking, no recovery). Current entries record which trade
+// ids the import produced, so a document can be re-imported once every one of those is deleted.
+export const tfexImportSchema=z.union([z.string().regex(importKeyPattern),z.object({key:z.string().regex(importKeyPattern),tradeIds:z.array(id).max(10000)})]);
+export const stateSchema=z.object({platforms:z.array(platformSchema).max(300),accounts:z.array(accountSchema).max(300),trades:z.array(tradeSchema).max(10000),tfex:z.array(tfexSchema).max(10000),tfexImports:z.array(tfexImportSchema).max(10000).optional(),cash:z.array(cashSchema).max(10000),quotes:z.record(z.string().max(200),nonnegative),fx:positive});
 export type Portfolio=z.infer<typeof stateSchema>;
 export type Trade=z.infer<typeof tradeSchema>;
 export type Tfex=z.infer<typeof tfexSchema>;
 export type Account=z.infer<typeof accountSchema>;
+export type TfexImport=z.infer<typeof tfexImportSchema>;
+const importKey=(entry:TfexImport)=>typeof entry==="string"?entry:entry.key;
 export const blankPortfolio=():Portfolio=>({platforms:[],accounts:[],trades:[],tfex:[],cash:[],quotes:{},fx:35});
 export const assetKey=(t:Pick<Trade,"symbol"|"currency"|"platform">)=>`${t.symbol.toUpperCase()}|${t.currency}|${t.platform}`;
 export function tfexPnl(t:Tfex){return t.exit===null?null:((t.exit-t.entry)*(t.side==="LONG"?1:-1)*t.qty*t.multiplier-t.fee);}
@@ -41,7 +47,7 @@ export function summarize(data:Portfolio){
 export function validatePortfolio(input:unknown):Portfolio{
  const d=stateSchema.parse(input);
  for(const list of [d.platforms,d.accounts,d.trades,d.tfex,d.cash])if(new Set(list.map(x=>x.id)).size!==list.length)throw new Error("มีรหัสรายการซ้ำ");
- if(new Set(d.tfexImports??[]).size!==(d.tfexImports??[]).length)throw new Error("มีเอกสาร TFEX นำเข้าซ้ำ");
+ if(new Set((d.tfexImports??[]).map(importKey)).size!==(d.tfexImports??[]).length)throw new Error("มีเอกสาร TFEX นำเข้าซ้ำ");
  const platforms=new Set(d.platforms.map(x=>x.id)),accounts=new Map(d.accounts.map(x=>[x.id,x]));
  for(const t of d.trades){if(!platforms.has(t.platform)||!accounts.has(t.account))throw new Error("ไม่พบบัญชีหรือแพลตฟอร์มที่เลือก");if(accounts.get(t.account)!.currency!==t.currency)throw new Error("สกุลเงินของรายการต้องตรงกับบัญชี");}
  for(const t of d.tfex)if(!platforms.has(t.platform))throw new Error("ไม่พบโบรกเกอร์ TFEX");
@@ -56,7 +62,11 @@ export function validatePortfolio(input:unknown):Portfolio{
  * Ambiguous/manual duplicates require resolution instead of silently guessing.
  */
 export function prepareTfexImport(data:Portfolio, statement:PiTfexStatement, platform:string, openingFees:Record<number,string>={}) {
- if((data.tfexImports??[]).includes(statement.key))throw new Error("ไฟล์นี้บันทึกแล้ว ไม่สามารถนำเข้าซ้ำได้ แม้เปลี่ยนชื่อไฟล์หรือโบรกเกอร์");
+ const priorImport=(data.tfexImports??[]).find(e=>importKey(e)===statement.key);
+ // A legacy bare-string entry has no recorded trade ids and always blocks. A current entry only
+ // blocks while at least one trade id it produced is still in the ledger; once the user deletes
+ // every one of them (wrong broker, duplicate platform, ...) the document can be imported again.
+ if(priorImport&&(typeof priorImport==="string"||priorImport.tradeIds.some(id=>data.tfex.some(t=>t.id===id))))throw new Error("ไฟล์นี้บันทึกแล้ว ไม่สามารถนำเข้าซ้ำได้ แม้เปลี่ยนชื่อไฟล์หรือโบรกเกอร์");
  const next=structuredClone(data);
  if(platform==="__new_pi__"){
   platform=crypto.randomUUID();
@@ -100,6 +110,7 @@ export function prepareTfexImport(data:Portfolio, statement:PiTfexStatement, pla
   const trade:Tfex={...fields,id:crypto.randomUUID(),platform,fee:Math.round((openingFee+row.fee)*100)/100,notes:"นำเข้าจากใบยืนยัน Pi"};
   next.tfex.push(trade);producedAt.set(trade.id,preview.length);preview.push({trade,openingFee,needsFee,matched,consumed:false});
  }
- next.tfexImports=[...(next.tfexImports??[]),statement.key];
+ const tradeIds=preview.filter(r=>!r.consumed).map(r=>r.trade.id);
+ next.tfexImports=[...(next.tfexImports??[]).filter(e=>importKey(e)!==statement.key),{key:statement.key,tradeIds}];
  return {data:validatePortfolio(next),rows:preview,needsFees:preview.some(r=>r.needsFee),savedCount:preview.filter(r=>!r.consumed).length};
 }
