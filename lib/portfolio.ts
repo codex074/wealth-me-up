@@ -85,19 +85,25 @@ export function prepareTfexImport(data:Portfolio, statement:PiTfexStatement, pla
   let openingFee=0, needsFee=false, matched=false;
   if(row.exit!==null){
    const candidates=next.tfex.filter(t=>sameOpen(t)&&t.exit===null);
-   if(candidates.length>1)throw new Error(`พบสถานะเปิด ${row.symbol} ที่ตรงกันหลายรายการ กรุณารวม/แก้รายการเดิมก่อนนำเข้า`);
    // A close with no exact-date/entry match must not silently fall through to "new position" if an open lot of the same symbol/side already exists — that lot would stay open forever.
    if(!candidates.length&&next.tfex.some(t=>t.platform===platform&&t.symbol.toUpperCase()===row.symbol&&t.side===row.side&&t.exit===null))throw new Error(`มีสถานะเปิด ${row.symbol} ${row.side} ที่วันที่/ราคาเปิดไม่ตรงกับเอกสาร กรุณาแก้ไขรายการเดิมก่อนนำเข้า`);
-   if(candidates.length===1){
-    const existing=candidates[0];
-    if(existing.qty<row.qty||existing.multiplier!==row.multiplier)throw new Error(`จำนวนหรือมูลค่าต่อจุดของสถานะเดิม ${row.symbol} ไม่ตรงกับ PDF`);
-    openingFee=Math.round(existing.fee*100*row.qty/existing.qty)/100;
+   if(candidates.length){
+    if(candidates.some(existing=>existing.multiplier!==row.multiplier)||candidates.reduce((sum,existing)=>sum+existing.qty,0)<row.qty)throw new Error(`จำนวนหรือมูลค่าต่อจุดของสถานะเดิม ${row.symbol} ไม่ตรงกับ PDF`);
     matched=true;
-    if(existing.qty===row.qty){
-     next.tfex=next.tfex.filter(t=>t.id!==existing.id);
-     if(producedAt.has(existing.id))preview[producedAt.get(existing.id)!].consumed=true;
-    } else {existing.qty-=row.qty;existing.fee=Math.round((existing.fee-openingFee)*100)/100;}
-    const trade:Tfex={...row,id:crypto.randomUUID(),platform,fee:Math.round((openingFee+row.fee)*100)/100,notes:existing.notes};
+    let remaining=row.qty;const matchedNotes:string[]=[];
+    for(const existing of candidates){
+     if(!remaining)break;
+     const take=Math.min(remaining,existing.qty);
+     const allocated=Math.round(existing.fee*100*take/existing.qty)/100;
+     openingFee=Math.round((openingFee+allocated)*100)/100;
+     if(existing.notes&&!matchedNotes.includes(existing.notes))matchedNotes.push(existing.notes);
+     remaining-=take;
+     if(existing.qty===take){
+      next.tfex=next.tfex.filter(t=>t.id!==existing.id);
+      if(producedAt.has(existing.id))preview[producedAt.get(existing.id)!].consumed=true;
+     }else{existing.qty-=take;existing.fee=Math.round((existing.fee-allocated)*100)/100;}
+    }
+    const trade:Tfex={...row,id:crypto.randomUUID(),platform,fee:Math.round((openingFee+row.fee)*100)/100,notes:matchedNotes.join("\n")};
     next.tfex.push(trade);producedAt.set(trade.id,preview.length);preview.push({trade,openingFee,needsFee,matched,consumed:false});continue;
    }
    const input=openingFees[index];

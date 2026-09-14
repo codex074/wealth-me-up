@@ -2,6 +2,16 @@
 
 Newest entry first. Each entry records what changed, what was verified, and what is still open, so the next agent (Codex or Claude) can continue without re-deriving state. Append a new entry at the top when you finish a session that changes product behavior or infrastructure.
 
+## 2026-09-15 — Pi import adds USD Futures and two-page statements (Codex)
+
+**Changed**: Expanded the Pi TFEX PDF adapter from S50-only, one-page statements to text-based statements up to two pages containing S50 quarterly futures (200 THB/point) and USD Futures (1,000 THB/point). Execution IDs now accept and validate Pi's observed `BU`/`BH`/`SE`/`SH` prefixes against Long/Short and Open/Close. The closing parser stops before `OUTSTANDING POSITION`, supports one closing execution that closes several opening cost lots, and calculates/checks each lot plus the printed group/statement totals. Ledger reconciliation now consumes multiple identical open lots FIFO, allocates their opening fees proportionally, preserves their notes, and leaves any unclosed remainder intact.
+
+**Verified**: All 57 encrypted PDFs supplied under `pi_tfex_2024/Pi_DCF` parsed with PDF.js: 35 one-page and 22 two-page files, 246 extracted rows across S50U24, S50Z24, S50U26, and USDU24. A chronological synthetic-ledger rehearsal imported all 48 unique documents without failure; 9 duplicate copies were blocked by fingerprint, and all 109 final ledger rows were closed with no orphan open lots. Missing historical fees were set to zero only inside this rehearsal, not saved anywhere. A real two-page mixed S50/USDU24 file rendered correctly in desktop and mobile browser previews without issuing a save. Synthetic/accounting/auth tests pass 38/38; TypeScript, lint, diff check, and production build pass. No source PDF, password, extracted personal data, or test portfolio was committed or saved to the live app.
+
+**Limits**: Import still supports Pi text PDFs only, max 10 MB and two pages; no OCR, options, other brokers, or other futures products. A closing lot with no matching imported/open ledger row still requires the user to enter its historical opening fee explicitly.
+
+**Deployment**: pending at this entry's creation.
+
 ## 2026-09-15 — Pi TFEX PDF import reviewed, hardened, committed, deployed (Claude)
 
 **Changed**: Codex's uncommitted import feature was committed as-is (`0736ce0`), then an independent review (no Critical findings) led to five fixes, one commit each (`6de7c67`..`937336f`):

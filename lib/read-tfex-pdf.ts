@@ -10,19 +10,23 @@ export async function readTfexPdf(file: File, password: string, salt: string) {
   const task = pdfjs.getDocument({data: new Uint8Array(await file.arrayBuffer()), password, useSystemFonts: true});
   try {
     const pdf = await task.promise;
-    if (pdf.numPages !== 1) throw new Error("รุ่นแรกรองรับใบยืนยัน Pi แบบ 1 หน้าเท่านั้น กรุณาบันทึกไฟล์หลายหน้าด้วยตนเอง");
-    const page = await pdf.getPage(1);
-    const content = await page.getTextContent();
     const lines: {y: number; items: {x: number; text: string}[]}[] = [];
-    for (const item of content.items) {
-      if (!("str" in item) || !item.str.trim()) continue;
-      const y = item.transform[5], x = item.transform[4];
-      let line = lines.find(line => Math.abs(line.y - y) < 2);
-      if (!line) { line = {y, items: []}; lines.push(line); }
-      line.items.push({x, text: item.str});
+    if (pdf.numPages > 2) throw new Error("รองรับใบยืนยัน Pi ไม่เกิน 2 หน้า");
+    const pages:string[]=[];
+    for(let pageNumber=1;pageNumber<=pdf.numPages;pageNumber++){
+      const page=await pdf.getPage(pageNumber);
+      const content=await page.getTextContent();
+      lines.length=0;
+      for (const item of content.items) {
+        if (!("str" in item) || !item.str.trim()) continue;
+        const y = item.transform[5], x = item.transform[4];
+        let line = lines.find(line => Math.abs(line.y - y) < 2);
+        if (!line) { line = {y, items: []}; lines.push(line); }
+        line.items.push({x, text: item.str});
+      }
+      pages.push(lines.sort((a,b) => b.y-a.y).map(l => l.items.sort((a,b) => a.x-b.x).map(i => i.text).join(" ")).join("\n"));
     }
-    const text = lines.sort((a,b) => b.y-a.y).map(l => l.items.sort((a,b) => a.x-b.x).map(i => i.text).join(" ")).join("\n");
-    return await parsePiTfex(text, salt);
+    return await parsePiTfex(pages.join("\n"), salt);
   } catch (error) {
     if (error instanceof Error && error.name === "PasswordException") throw new Error("PDF ต้องใช้รหัสผ่าน หรือรหัสผ่านไม่ถูกต้อง กรุณากรอกใหม่แล้วลองอีกครั้ง");
     if (error instanceof Error && /InvalidPDFException|UnknownErrorException/.test(error.name)) throw new Error("เปิด PDF ไม่ได้ ไฟล์อาจเสียหายหรือเป็นรูปแบบที่ยังไม่รองรับ");

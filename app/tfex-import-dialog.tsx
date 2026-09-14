@@ -31,7 +31,7 @@ export function TfexImportDialog({data,save,close,salt}:{data:Portfolio;save:(ne
   finally{lock.current=false;setBusy(false);}
  }
  return <Dialog open onOpenChange={open=>{if(!open&&!busy)close();}}><DialogContent showCloseButton={false} className="!max-w-[min(1100px,calc(100%-2rem))] max-h-[90dvh] overflow-y-auto !bg-[#fcfdf9] !rounded-xl">
-  <DialogHeader><DialogTitle>นำเข้า TFEX จาก PDF</DialogTitle><DialogDescription>ใบยืนยัน Pi · S50 Futures · PDF ข้อความ 1 หน้า ไม่เกิน 10 MB</DialogDescription></DialogHeader>
+  <DialogHeader><DialogTitle>นำเข้า TFEX จาก PDF</DialogTitle><DialogDescription>ใบยืนยัน Pi · S50 / USD Futures · PDF ข้อความ 1–2 หน้า ไม่เกิน 10 MB</DialogDescription></DialogHeader>
   <p className="help-text">อ่านไฟล์และรหัสผ่านบนอุปกรณ์ของคุณ บันทึกเฉพาะข้อมูลเทรดหลังตรวจรายการ · ไม่เปลี่ยนยอดบัญชีเงินสด</p>
   {!statement?<form onSubmit={read} className="space-y-4">
    <label className="form-field">ไฟล์ PDF<input type="file" accept=".pdf,application/pdf" required disabled={busy} onChange={e=>{setFile(e.target.files?.[0]??null);setError("");}}/></label>
