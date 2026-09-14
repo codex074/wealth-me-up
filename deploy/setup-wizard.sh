@@ -187,66 +187,85 @@ finish() {
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV_FILE="${SCRIPT_DIR}/.env"
 
-TOTAL_STAGES=3
+TOTAL_STAGES=4
+APP_HOST="wealth-me-up.codex074.com"
 
-banner "wealth-me-up → wealth-me-up.codex074.com on pve1"
+banner "wealth-me-up → Google login on ${APP_HOST}"
 
-# ── Stage 1: Cloudflare Tunnel ─────────────────────────────────────────────
-stage "Cloudflare Tunnel — create it and point it at the app"
-say "This app will run in its own Docker stack on pve1's existing \"docker\""
-say "LXC (103), with zero ports opened on your network — a Cloudflare Tunnel"
-say "carries traffic in, the same pattern already used there for pharmshift."
+# ── Stage 1: Google OAuth client ───────────────────────────────────────────
+stage "Google Cloud — create the OAuth client the app signs in with"
+say "The app now authenticates people itself with Google. It needs an"
+say "OAuth 2.0 Web client ID and secret from Google Cloud Console."
+open_url "https://console.cloud.google.com/apis/credentials"
+step "Pick (or create) a project, e.g. \"wealth-me-up\"."
+step "If asked, configure the OAuth consent screen first: User type External,"
+step "  app name \"Wealth Me Up\", your email as support/developer contact."
+step "  Publishing status \"Testing\" is fine — add your own Google account"
+step "  under Test users."
+step "Create credentials → OAuth client ID → Application type: Web application."
+step "Name: wealth-me-up. Authorized redirect URIs (add both):"
+step "  https://${APP_HOST}/auth/google/callback"
+step "  http://localhost:5173/auth/google/callback"
+step "Create, then copy the Client ID and Client secret."
+ask GOOGLE_CLIENT_ID "Paste the Client ID:"
+ask_secret GOOGLE_CLIENT_SECRET "Paste the Client secret:"
+write_env GOOGLE_CLIENT_ID "$GOOGLE_CLIENT_ID"
+write_env GOOGLE_CLIENT_SECRET "$GOOGLE_CLIENT_SECRET"
+
+# ── Stage 2: app secrets and allowlist ─────────────────────────────────────
+stage "App secrets — session key and who may sign in"
+existing_secret=$(_existing SESSION_SECRET || true)
+if [[ -n "$existing_secret" ]]; then
+  note "SESSION_SECRET already set — keeping it (rotate it to sign everyone out)."
+  if confirm "Rotate SESSION_SECRET now? (signs out every browser)"; then
+    existing_secret=""
+  fi
+fi
+if [[ -z "$existing_secret" ]]; then
+  SESSION_SECRET=$(openssl rand -base64 32)
+  write_env SESSION_SECRET "$SESSION_SECRET"
+fi
+default_emails=$(_existing ALLOWED_EMAILS || _existing OWNER_EMAIL || true)
+say "Only these Google accounts may use the app (comma-separated, any case)."
+[[ -n "$default_emails" && -z "$(_existing ALLOWED_EMAILS || true)" ]] && note "Defaulting to your previous OWNER_EMAIL: ${default_emails}"
+ask ALLOWED_EMAILS "Allowed emails:"
+[[ -z "$ALLOWED_EMAILS" ]] && ALLOWED_EMAILS="$default_emails"
+[[ -z "$ALLOWED_EMAILS" ]] && { warn "ALLOWED_EMAILS cannot be empty"; exit 1; }
+write_env ALLOWED_EMAILS "$ALLOWED_EMAILS"
+write_env APP_ORIGIN "https://${APP_HOST}"
+note "Each allowed email gets its own portfolio, keyed by that email."
+
+# ── Stage 3: Cloudflare — tunnel straight to the app, no Access ────────────
+stage "Cloudflare — point the tunnel at the app and remove the Access gate"
+say "Cloudflare Access used to be the login wall. The app now has its own,"
+say "so Access must be removed or you would sign in twice."
 open_url "https://one.dash.cloudflare.com/"
-step "Go to Networks → Tunnels → Create a tunnel."
-step "Connector type: Cloudflared. Name it: wealth-me-up. Save tunnel."
-step "On \"Install and run a connector\", ignore the docker run command shown"
-step "  — docker-compose.yml already runs cloudflared. Just copy the token:"
-step "  it's the long string after \"--token \" in that command."
-ask_secret TUNNEL_TOKEN "Paste the tunnel token:"
-step "Click Next → \"Public Hostname\" tab. Fill in:"
-step "  Subdomain: wealth-me-up   Domain: codex074.com   Path: (blank)"
-step "  Service Type: HTTP   URL: wealth-me-up-proxy:80"
-step "Do not connect the tunnel to the running app until Stage 2 is complete."
-note "If codex074.com isn't in the Domain dropdown, this Zero Trust org is a"
-note "different Cloudflare account than the one that owns the domain — stop"
-note "here and tell Claude before continuing."
-step "Save the tunnel. Cloudflare creates the DNS record for you — that's"
-step "the wealth-me-up.codex074.com subdomain, done."
-write_env TUNNEL_TOKEN "$TUNNEL_TOKEN"
+step "Networks → Tunnels → wealth-me-up → Public Hostname → edit ${APP_HOST}:"
+step "  Service Type: HTTP   URL: wealth-me-up-web:8787"
+step "  Additional settings → Access → turn OFF \"Protect with Access\". Save."
+step "Access → Applications → delete the \"Wealth Me Up\" application."
+existing_token=$(_existing TUNNEL_TOKEN || true)
+if [[ -z "$existing_token" ]]; then
+  step "The tunnel token is missing here. Open the tunnel → Configure and copy"
+  step "  the token after \"--token \" from the connector command."
+  ask_secret TUNNEL_TOKEN "Paste the tunnel token:"
+  write_env TUNNEL_TOKEN "$TUNNEL_TOKEN"
+else
+  note "Keeping the existing TUNNEL_TOKEN."
+fi
+pause "Press Enter once the hostname points at wealth-me-up-web:8787 with Access off."
 
-# ── Stage 2: Cloudflare Access — gate it to you ────────────────────────────
-stage "Cloudflare Access — lock the app to your own login"
-say "This app has no password screen of its own — it trusts whoever the"
-say "layer in front of it says is signed in (same trust model OpenAI Sites"
-say "used). Cloudflare Access becomes that layer: nobody reaches the app"
-say "without signing in at Cloudflare's edge first."
-open_url "https://one.dash.cloudflare.com/"
-step "Go to Access → Applications → Add an application → Self-hosted."
-step "Application name: Wealth Me Up.   Application domain: wealth-me-up.codex074.com"
-step "Next → add a policy. Policy name: Owner only. Action: Allow."
-ask OWNER_EMAIL "Your email to allow (Access will send it a one-time login code):"
-step "Include rule: Emails → paste: ${OWNER_EMAIL}"
-step "Next → Add application."
-write_env OWNER_EMAIL "$OWNER_EMAIL"
-note "Anyone else who tries the URL gets Cloudflare's sign-in wall, not the app."
-step "Copy the application's AUD tag from Additional settings."
-step "Return to the tunnel's public hostname → Additional settings → Access."
-step "Enable Protect with Access, enter your team name, and select this app's AUD."
-pause "Press Enter after saving and verifying Protect with Access is enabled."
-warn "Email headers alone do not prove identity. The tunnel must validate Access JWTs."
-
-# ── Stage 3: build and ship it ─────────────────────────────────────────────
+# ── Stage 4: build and ship it ─────────────────────────────────────────────
 stage "Deploy to pve1"
-say "Everything from here is automatic: pack the repo, copy it to pve1,"
-say "build the Docker image inside the \"docker\" LXC, and start the stack"
-say "(app + header-translating Caddy + this tunnel), all with no ports"
-say "published on the host."
-if confirm "Deploy now? (builds + starts containers on pve1, requires SSH root@pve1)"; then
+say "Pack the repo, copy it to pve1, rebuild the image inside the \"docker\""
+say "LXC, and restart the stack (app + tunnel). No ports are published."
+if confirm "Deploy now? (requires SSH root@pve1)"; then
   "${SCRIPT_DIR}/redeploy.sh"
 else
   SKIPPED+=("deploy — run deploy/redeploy.sh manually when ready")
 fi
 
 finish
-say "Visit https://wealth-me-up.codex074.com — Cloudflare Access should ask"
-say "you to sign in, then hand you straight to the app."
+say "Visit https://${APP_HOST} — you should land on the app's own login page"
+say "and be able to sign in with an allowed Google account. Then run:"
+say "  ssh root@pve1 \"pct exec 103 -- sh -c 'cd /opt/wealth-me-up/deploy && docker compose exec web node deploy/smoke-test.mjs'\""
