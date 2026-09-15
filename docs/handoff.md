@@ -8,7 +8,9 @@ Newest entry first. Each entry records what changed, what was verified, and what
 
 **Verified**: added 3 focused tests to `tests/pi-tfex.test.ts` (chronological cross-document matching, the platform-sentinel fix, skip-and-continue on a duplicate) — 41/41 total pass, `tsc`, lint (same 3 pre-existing errors), and production build all clean. Manually exercised in the local dev build (synthetic session, hand-built text-PDF fixtures, no real owner data): multi-select, a two-file cross-document close producing the exact expected fee/P&L, the skip-with-reason banner on a mixed valid+duplicate selection, and layout/table-scroll at 400px width.
 
-**Limits**: same per-file limits as before (Pi text PDF, 10 MB, two pages). No per-file removal from a batch before reading; a bad file must be re-selected without it. Not deployed to pve1 yet.
+**Limits**: same per-file limits as before (Pi text PDF, 10 MB, two pages). No per-file removal from a batch before reading; a bad file must be re-selected without it.
+
+**Deployment**: commit `e7261e3` shipped to pve1 / LXC 103 with `deploy/redeploy.sh`. Post-deploy smoke test passed 7/7, public `/login` returned 200, and deployed `lib/portfolio.ts` / `app/tfex-import-dialog.tsx` SHA-256 hashes match the local files. The owner's live portfolio was not touched.
 
 ## 2026-09-15 — Pi import adds USD Futures and two-page statements (Codex)
 
