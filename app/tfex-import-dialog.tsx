@@ -39,7 +39,7 @@ export function TfexImportDialog({data,save,close,salt}:{data:Portfolio;save:(ne
   catch(e){setError(e instanceof Error&&e.name!=="ZodError"?e.message:"บันทึกไม่สำเร็จ กรุณาตรวจสอบข้อมูล");}
   finally{lock.current=false;setBusy(false);}
  }
- return <Dialog open onOpenChange={open=>{if(!open&&!busy)close();}}><DialogContent showCloseButton={false} className="!max-w-[min(1100px,calc(100%-2rem))] max-h-[90dvh] overflow-y-auto !bg-[#fcfdf9] !rounded-xl">
+ return <Dialog open onOpenChange={open=>{if(!open&&!busy)close();}}><DialogContent showCloseButton={false} className="!max-w-[min(1100px,calc(100%-2rem))] max-h-[90dvh] overflow-y-auto !bg-white !rounded-2xl">
   <DialogHeader><DialogTitle>นำเข้า TFEX จาก PDF</DialogTitle><DialogDescription>ใบยืนยัน Pi · S50 / USD Futures · PDF ข้อความ 1–2 หน้า ไม่เกิน 10 MB ต่อไฟล์ · เลือกได้หลายไฟล์</DialogDescription></DialogHeader>
   <p className="help-text">อ่านไฟล์และรหัสผ่านบนอุปกรณ์ของคุณ บันทึกเฉพาะข้อมูลเทรดหลังตรวจรายการ · ไม่เปลี่ยนยอดบัญชีเงินสด</p>
   {!reads.length?<form onSubmit={read} className="space-y-4">
