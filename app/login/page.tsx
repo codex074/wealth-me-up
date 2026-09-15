@@ -1,5 +1,5 @@
 import {redirect} from "next/navigation";
-import {ChartNoAxesCombined,ShieldCheck} from "lucide-react";
+import {ShieldCheck} from "lucide-react";
 import {getUser} from "@/app/auth";
 import {safeRelativeReturnPath} from "@/lib/auth/return-path";
 
@@ -28,8 +28,10 @@ export default async function LoginPage({searchParams}:{searchParams:Promise<Sea
  const message=error?(Object.hasOwn(MESSAGES,error)?MESSAGES[error]:MESSAGES.failed):null;
  return <main className="login-shell">
   <section className="login-card">
-   <div className="brand"><span className="brand-icon"><ChartNoAxesCombined size={25}/></span><span>wealth<span className="brand-light"> me up</span><small>MAKE YOUR WEALTH GROW</small></span></div>
-   <h1>เข้าสู่ระบบ</h1>
+   <div className="hero-block">
+    <div className="eyebrow">YOUR WEALTH, IN ONE PLACE</div>
+    <div className="hero-num">wealth me up</div>
+   </div>
    <p>บันทึกการลงทุน บัญชีเงินสด และผลเทรด TFEX ของคุณในที่เดียว</p>
    {message&&<div className="error-message" role="alert">{message}</div>}
    <a className="btn primary login-google" href={`/auth/google/login?return_to=${encodeURIComponent(returnTo)}`}><GoogleMark/> เข้าสู่ระบบด้วย Google</a>
