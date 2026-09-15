@@ -33,7 +33,7 @@ Before changing accounting behavior, read [Product behavior](README.md#product-b
 
 ## Interface and runtime
 
-Preserve the Thai interface, green palette, and responsive workspace layout. When changing forms or navigation, verify keyboard labels/focus, mobile menu dismissal, table scrolling, and recoverable save errors. Prices and charts must reflect their stated data source.
+Preserve the Thai interface and the responsive workspace layout. The UI's visual system is Cohere-style (black/navy/coral/blue, IBM Plex Sans/IBM Plex Sans Thai) per `docs/superpowers/specs/2026-09-15-cohere-redesign-design.md` — financial gain/loss stays green/red on light surfaces (the one deliberate carve-out; see that spec's §1.5) and white/blue/coral on the TFEX dark band (§1.6). Don't reintroduce the pre-redesign green brand identity elsewhere. When changing forms or navigation, verify keyboard labels/focus, mobile menu dismissal, table scrolling, and recoverable save errors. Prices and charts must reflect their stated data source.
 
 The app uses Vinext's Next-compatible interface on Vite and Cloudflare Workers. Preserve the existing framework scripts, npm lockfile, and Sites build integration. Server code must work in the Worker runtime; local Node-only utilities belong outside request handlers. Auth routes (`/auth/*`) and `/login` must stay outside the signed-in shell; all other pages go through `requireUser`.
 
