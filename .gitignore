@@ -49,3 +49,4 @@ next-env.d.ts
 
 # Local Worker variables (Google OAuth, session secret)
 .dev.vars*
+.superpowers/
