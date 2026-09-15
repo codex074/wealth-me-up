@@ -4,7 +4,7 @@
 
 Build a private, Thai-first investment journal for assets, broker/platform records, multiple cash accounts, and TFEX futures. Keep user-facing copy and task updates in Thai; retain established English financial terms and code identifiers where appropriate.
 
-Before changing accounting behavior, read [Product behavior](README.md#product-behavior). Manual prices and the user-entered valuation exchange rate are explicit product boundaries; there is no sample data and no historical chart. Keep these distinctions visible when changing the interface.
+Before changing accounting behavior, read [Product behavior](README.md#product-behavior). Manual prices and the user-entered valuation exchange rate are explicit product boundaries; there is no sample data and no historical **valuation** chart (no historical price series exists to derive one from). The TFEX journal's cumulative realized-P&L chart is a documented exception — it charts an already-known ledger fact, not an estimate. Keep these distinctions visible when changing the interface.
 
 ## Where to work
 

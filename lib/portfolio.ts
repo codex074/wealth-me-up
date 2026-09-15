@@ -26,6 +26,43 @@ const importKey=(entry:TfexImport)=>typeof entry==="string"?entry:entry.key;
 export const blankPortfolio=():Portfolio=>({platforms:[],accounts:[],trades:[],tfex:[],cash:[],quotes:{},fx:35});
 export const assetKey=(t:Pick<Trade,"symbol"|"currency"|"platform">)=>`${t.symbol.toUpperCase()}|${t.currency}|${t.platform}`;
 export function tfexPnl(t:Tfex){return t.exit===null?null:((t.exit-t.entry)*(t.side==="LONG"?1:-1)*t.qty*t.multiplier-t.fee);}
+export type TfexScope = {kind:"all"} | {kind:"year", year:number} | {kind:"quarter", year:number, quarter:1|2|3|4};
+export type TfexPnlPoint = {date:string, cumulative:number};
+const tfexQuarter=(closeDate:string)=>Math.ceil(Number(closeDate.slice(5,7))/3) as 1|2|3|4;
+/** Cumulative realized TFEX P&L, bucketed by closeDate (never the open date). "year"/"quarter"
+ * scopes restart the running total from 0 at the period's start; "all" runs from the first
+ * ever closed trade. Same-day closes collapse into one point (recharts' category axis renders
+ * duplicate x-values as separate slots joined by a diagonal segment, implying intra-day
+ * movement that never happened).
+ */
+export function tfexPnlSeries(data:Portfolio, scope:TfexScope):TfexPnlPoint[]{
+ const closed=data.tfex.filter(t=>t.exit!==null).filter(t=>{
+  if(scope.kind==="all")return true;
+  if(t.closeDate!.slice(0,4)!==String(scope.year))return false;
+  return scope.kind==="year"||tfexQuarter(t.closeDate!)===scope.quarter;
+ });
+ if(!closed.length)return [];
+ const sorted=[...closed].sort((a,b)=>a.closeDate!.localeCompare(b.closeDate!));
+ const byDate=new Map<string,number>();
+ for(const t of sorted)byDate.set(t.closeDate!,(byDate.get(t.closeDate!)??0)+tfexPnl(t)!);
+ const points:TfexPnlPoint[]=[];
+ let running=0;
+ for(const [date,pnl] of byDate){running+=pnl;points.push({date,cumulative:running});}
+ if(scope.kind!=="all"){
+  const periodStart=scope.kind==="year"?`${scope.year}-01-01`:`${scope.year}-${String((scope.quarter-1)*3+1).padStart(2,"0")}-01`;
+  if(periodStart<points[0].date)points.unshift({date:periodStart,cumulative:0});
+ }
+ return points;
+}
+/** Years/quarters that have at least one closed TFEX trade, most recent first, for a period picker. */
+export function availableTfexPeriods(data:Portfolio):{years:number[], quarters:{year:number, quarter:1|2|3|4}[]}{
+ const closed=data.tfex.filter(t=>t.exit!==null);
+ const years=[...new Set(closed.map(t=>Number(t.closeDate!.slice(0,4))))].sort((a,b)=>b-a);
+ const quarters=[...new Set(closed.map(t=>`${t.closeDate!.slice(0,4)}-${tfexQuarter(t.closeDate!)}`))]
+  .map(key=>{const [year,quarter]=key.split("-").map(Number);return {year,quarter:quarter as 1|2|3|4};})
+  .sort((a,b)=>b.year-a.year||b.quarter-a.quarter);
+ return {years,quarters};
+}
 export function summarize(data:Portfolio){
  const positions=new Map<string,{key:string,symbol:string,name:string,type:string,platform:string,currency:string,qty:number,cost:number,avg:number,price:number,value:number,gain:number}>();
  const balances=new Map(data.accounts.map(a=>[a.id,a.opening]));
