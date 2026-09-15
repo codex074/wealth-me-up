@@ -2,6 +2,14 @@
 
 Newest entry first. Each entry records what changed, what was verified, and what is still open, so the next agent (Codex or Claude) can continue without re-deriving state. Append a new entry at the top when you finish a session that changes product behavior or infrastructure.
 
+## 2026-09-15 — Pi import accepts multiple PDF files at once (Claude)
+
+**Changed**: `TfexImportDialog` now takes `<input type="file" multiple>` with one shared password field. New `prepareTfexImportBatch` in `lib/portfolio.ts` sorts the successfully-read statements by trading date and folds `prepareTfexImport` over them so a close in a later document can match an open lot created by an earlier one in the same batch; a statement that fails to read or fails validation (wrong password, corrupt file, duplicate document) is skipped with its reason shown and the rest of the batch still applies. Fixed a latent bug this exposed: reusing the `"__new_pi__"` new-broker sentinel across a loop would have created one "Pi Securities" platform per file — the batch now pins the platform id created by the first successful statement for the rest of the batch. The preview screen groups rows per file, and one `save()` call commits the whole batch (single revision bump). Opening-fee input keys became `"<statement fingerprint>:<row index>"` since rows now come from multiple documents.
+
+**Verified**: added 3 focused tests to `tests/pi-tfex.test.ts` (chronological cross-document matching, the platform-sentinel fix, skip-and-continue on a duplicate) — 41/41 total pass, `tsc`, lint (same 3 pre-existing errors), and production build all clean. Manually exercised in the local dev build (synthetic session, hand-built text-PDF fixtures, no real owner data): multi-select, a two-file cross-document close producing the exact expected fee/P&L, the skip-with-reason banner on a mixed valid+duplicate selection, and layout/table-scroll at 400px width.
+
+**Limits**: same per-file limits as before (Pi text PDF, 10 MB, two pages). No per-file removal from a batch before reading; a bad file must be re-selected without it. Not deployed to pve1 yet.
+
 ## 2026-09-15 — Pi import adds USD Futures and two-page statements (Codex)
 
 **Changed**: Expanded the Pi TFEX PDF adapter from S50-only, one-page statements to text-based statements up to two pages containing S50 quarterly futures (200 THB/point) and USD Futures (1,000 THB/point). Execution IDs now accept and validate Pi's observed `BU`/`BH`/`SE`/`SH` prefixes against Long/Short and Open/Close. The closing parser stops before `OUTSTANDING POSITION`, supports one closing execution that closes several opening cost lots, and calculates/checks each lot plus the printed group/statement totals. Ledger reconciliation now consumes multiple identical open lots FIFO, allocates their opening fees proportionally, preserves their notes, and leaves any unclosed remainder intact.

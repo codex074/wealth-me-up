@@ -57,11 +57,13 @@ export function validatePortfolio(input:unknown):Portfolio{
  return d;
 }
 
+export type TfexImportPreview = {trade:Tfex; openingFee:number; needsFee:boolean; matched:boolean; consumed:boolean};
+export type TfexImportResult = {data:Portfolio; rows:TfexImportPreview[]; needsFees:boolean; savedCount:number};
 /** Reconcile against the current ledger before preview and again before saving.
  * A close consumes a unique matching open lot, preserving fees on a partial close.
  * Ambiguous/manual duplicates require resolution instead of silently guessing.
  */
-export function prepareTfexImport(data:Portfolio, statement:PiTfexStatement, platform:string, openingFees:Record<number,string>={}) {
+export function prepareTfexImport(data:Portfolio, statement:PiTfexStatement, platform:string, openingFees:Record<number,string>={}):TfexImportResult {
  const priorImport=(data.tfexImports??[]).find(e=>importKey(e)===statement.key);
  // A legacy bare-string entry has no recorded trade ids and always blocks. A current entry only
  // blocks while at least one trade id it produced is still in the ledger; once the user deletes
@@ -73,7 +75,7 @@ export function prepareTfexImport(data:Portfolio, statement:PiTfexStatement, pla
   next.platforms.push({id:platform,name:"Pi Securities",kind:"โบรกเกอร์",notes:""});
  }
  if(!next.platforms.some(p=>p.id===platform))throw new Error("กรุณาเลือกโบรกเกอร์");
- const preview: {trade:Tfex; openingFee:number; needsFee:boolean; matched:boolean; consumed:boolean}[]=[];
+ const preview: TfexImportPreview[]=[];
  // Track trades this same import produced, so a later row in the same document that fully
  // consumes one (a same-day open immediately closed) can mark the earlier preview row consumed
  // instead of leaving a phantom entry that will not actually be saved.
@@ -119,4 +121,32 @@ export function prepareTfexImport(data:Portfolio, statement:PiTfexStatement, pla
  const tradeIds=preview.filter(r=>!r.consumed).map(r=>r.trade.id);
  next.tfexImports=[...(next.tfexImports??[]).filter(e=>importKey(e)!==statement.key),{key:statement.key,tradeIds}];
  return {data:validatePortfolio(next),rows:preview,needsFees:preview.some(r=>r.needsFee),savedCount:preview.filter(r=>!r.consumed).length};
+}
+
+export type TfexImportBatchEntry = {statement:PiTfexStatement} & ({result:TfexImportResult}|{error:string});
+export type TfexImportBatchResult = {entries:TfexImportBatchEntry[]; data:Portfolio; needsFees:boolean; savedCount:number};
+/** Import several statements at once. Sorted by trading date so a close in a later
+ * document can match an open lot from an earlier one. openingFees keys are
+ * "<statement.key>:<row index>" so several statements' rows don't collide.
+ * A statement that fails validation is skipped; the rest still apply. If `platform`
+ * is the "__new_pi__" sentinel, every statement after the first lands on the one
+ * broker created for the batch instead of each creating its own.
+ */
+export function prepareTfexImportBatch(data:Portfolio, statements:PiTfexStatement[], platform:string, openingFees:Record<string,string>={}):TfexImportBatchResult {
+ const sorted=[...statements].sort((a,b)=>a.date.localeCompare(b.date));
+ let runningData=data, resolvedPlatform=platform;
+ const entries:TfexImportBatchEntry[]=[];
+ for(const statement of sorted){
+  const prefix=`${statement.key}:`;
+  const localFees=Object.fromEntries(Object.entries(openingFees).filter(([key])=>key.startsWith(prefix)).map(([key,value])=>[Number(key.slice(prefix.length)),value]));
+  try{
+   const result=prepareTfexImport(runningData,statement,resolvedPlatform,localFees);
+   runningData=result.data;
+   if(resolvedPlatform==="__new_pi__")resolvedPlatform=result.rows[0].trade.platform;
+   entries.push({statement,result});
+  }catch(e){
+   entries.push({statement,error:e instanceof Error&&e.name!=="ZodError"?e.message:"นำเข้าไม่สำเร็จ"});
+  }
+ }
+ return {entries,data:runningData,needsFees:entries.some(e=>"result" in e&&e.result.needsFees),savedCount:entries.reduce((sum,e)=>sum+("result" in e?e.result.savedCount:0),0)};
 }

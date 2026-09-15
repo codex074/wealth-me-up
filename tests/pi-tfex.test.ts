@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {parsePiTfex} from '../lib/pi-tfex.ts';
-import {blankPortfolio,prepareTfexImport,summarize,validatePortfolio} from '../lib/portfolio.ts';
+import {blankPortfolio,prepareTfexImport,prepareTfexImportBatch,summarize,validatePortfolio} from '../lib/portfolio.ts';
 // Synthetic statement; no customer identifiers or real trade records.
 const statement=`Pi Securities Public Company Limited
 Confirmation Note / Tax Invoice / Settlement Statement
@@ -161,6 +161,42 @@ test('USD Futures use the observed 1,000 THB point value and support BU/SE execu
  assert.ok(Math.abs(summarize(prepareTfexImport(portfolio(),parsed,'pi',{0:'0'}).data).pnl-1007.2)<1e-8);
  const open=await parsePiTfex(usd.replace('SE-20260109-90001 S Close 5 34.96','BU-20260109-90001 L Open 5 34.96').replace(/POSITION CLOSING[\s\S]*STATEMENT OF ACCOUNT/,'STATEMENT OF ACCOUNT'),SALT);
  assert.equal(open.rows[0].multiplier,1000);assert.equal(open.rows[0].side,'LONG');assert.equal(open.rows[0].exit,null);
+});
+const openOnly=`Pi Securities Public Company Limited
+Confirmation Note / Tax Invoice / Settlement Statement
+DN-20260102-88888
+Instrument Contract Long/ No. of Cost Premium/Settlement Commission and Charge
+Code No. Short Status Contract Price Amount Fees* VAT W/H Amount
+----------------
+S50H26 SH-20260102-90001 S Open 2 900.00 0.00 40.00 2.80 0.00 42.80
+------ ------ ---- ---- -----
+Total 0.00 40.00 2.80 0.00 42.80
+====== ====== ==== ==== =====
+Grand Total 0.00 40.00 2.80 0.00 42.80
+STATEMENT OF ACCOUNT`;
+test('a batch chains statements chronologically so a close in a later document matches an open from an earlier one',async()=>{
+ const open=await parsePiTfex(openOnly,SALT),close=await parsePiTfex(statement,SALT);
+ // Passed out of chronological order on purpose; the batch must sort by statement date itself.
+ const batch=prepareTfexImportBatch(portfolio(),[close,open],'pi');
+ assert.equal(batch.needsFees,false);assert.equal(batch.entries.length,2);
+ assert.equal(batch.data.tfex.length,1);
+ const trade=batch.data.tfex[0];assert.equal(trade.exit,905);assert.equal(trade.fee,85.6);
+ assert.ok(Math.abs(summarize(batch.data).pnl+2085.6)<1e-8);
+});
+test('a batch pins the __new_pi__ platform sentinel to the first created platform',async()=>{
+ const open=await parsePiTfex(openOnly,SALT),close=await parsePiTfex(statement,SALT);
+ const batch=prepareTfexImportBatch(blankPortfolio(),[open,close],'__new_pi__');
+ assert.equal(batch.data.platforms.length,1);
+ assert.equal(batch.data.tfex.every(t=>t.platform===batch.data.platforms[0].id),true);
+});
+test('a batch skips a statement that fails validation and keeps what it already applied',async()=>{
+ const s=await parsePiTfex(statement,SALT),duplicate=await parsePiTfex(statement,SALT);
+ const batch=prepareTfexImportBatch(portfolio(),[s,duplicate],'pi',{[`${s.key}:0`]:'0'});
+ assert.equal(batch.entries.length,2);
+ assert.ok('result' in batch.entries[0]);
+ assert.ok('error' in batch.entries[1]);
+ assert.match((batch.entries[1] as {error:string}).error,/บันทึกแล้ว/);
+ assert.equal(batch.savedCount,1);assert.equal(batch.data.tfex.length,1);
 });
 test('rejects an execution id whose prefix contradicts its side or open/close status',async()=>{
  await assert.rejects(()=>parsePiTfex(statement.replace('BH-20260109-90001','BU-20260109-90001'),SALT),/รหัสรายการ/);
