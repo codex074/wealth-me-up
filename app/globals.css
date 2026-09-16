@@ -148,3 +148,17 @@ body{background:var(--background);color:var(--ink);font-family:"IBM Plex Sans Th
 .metric-tile .sub{font-size:10px;color:var(--muted-slate);margin-top:8px;line-height:1.5}
 @media(max-width:1200px){.metric-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:767px){.metric-columns{grid-template-columns:1fr}.metric-col:first-child{border-right:none;border-bottom:1px solid var(--hairline);padding-bottom:20px;margin-bottom:20px}.metric-grid{grid-template-columns:repeat(2,1fr)}.metric-tile .v{font-size:19px}}.profile-text{min-width:0;flex:1}.profile-name{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.profile small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.logout-button{color:#a5a5b0;padding:6px;border-radius:6px}.logout-button:hover{background:#ffffff14;color:#fff}
+.market-tabs{border:1px solid var(--border-light);background:#fff;padding:3px;height:auto!important;flex-wrap:wrap;margin-bottom:17px}.market-tabs [data-slot=tabs-trigger]{font-size:12px;padding:7px 13px;flex:none}.market-tabs [data-state=active]{background:var(--ink-black);color:#fff;box-shadow:none}
+.market-heatmap-wrap{position:relative;width:100%;height:640px;padding:14px}
+.market-sector{position:absolute;background:var(--soft-stone);border-radius:6px}
+.market-sector-label{position:absolute;font-size:11px;font-weight:600;color:var(--slate);display:flex;align-items:center;padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.market-tile{position:absolute;border-radius:4px;border:1px solid #ffffffdb;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;overflow:hidden;text-align:center}
+.market-tile-logo{width:26px;height:26px;border-radius:50%;background:#fffffff5;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.market-tile-logo img{width:18px;height:18px;object-fit:contain}
+.market-tile-symbol{font-size:12px;font-weight:600;line-height:1.2}
+.market-tile-change{font-size:10px;line-height:1.2}
+.market-legend{display:flex;align-items:center;gap:8px;padding:14px 18px 18px;font-size:10px;color:var(--muted-slate)}
+.market-legend-swatch{display:flex;align-items:center;gap:4px}
+.market-legend-swatch i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.market-updated{margin-left:auto}
+@media(max-width:767px){.market-heatmap-wrap{height:480px;padding:8px}.market-tile-symbol{font-size:10px}.market-tile-change{font-size:9px}}

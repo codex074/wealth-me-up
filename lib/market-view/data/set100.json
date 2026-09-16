@@ -1,0 +1,502 @@
+[
+  {
+    "symbol": "AAV.BK",
+    "name": "Asia Aviation Public Company Limited",
+    "sector": "Industrials"
+  },
+  {
+    "symbol": "ADVANC.BK",
+    "name": "Advanced Info Service Public Company Limited",
+    "sector": "Communication Services"
+  },
+  {
+    "symbol": "AEONTS.BK",
+    "name": "AEON Thana Sinsap (Thailand) Public Company Limited",
+    "sector": "Financial Services"
+  },
+  {
+    "symbol": "AMATA.BK",
+    "name": "Amata Corporation Public Company Limited",
+    "sector": "Real Estate"
+  },
+  {
+    "symbol": "AOT.BK",
+    "name": "Airports of Thailand Public Company Limited",
+    "sector": "Industrials"
+  },
+  {
+    "symbol": "AP.BK",
+    "name": "AP (Thailand) Public Company Limited",
+    "sector": "Real Estate"
+  },
+  {
+    "symbol": "AURA.BK",
+    "name": "Aurora Design Public Company Limited",
+    "sector": "Consumer Cyclical"
+  },
+  {
+    "symbol": "AWC.BK",
+    "name": "Asset World Corp Public Company Limited",
+    "sector": "Consumer Cyclical"
+  },
+  {
+    "symbol": "BA.BK",
+    "name": "Bangkok Airways Public Company Limited",
+    "sector": "Industrials"
+  },
+  {
+    "symbol": "BAM.BK",
+    "name": "Bangkok Commercial Asset Management Public Company Limited",
+    "sector": "Financial Services"
+  },
+  {
+    "symbol": "BANPU.BK",
+    "name": "Banpu Public Company Limited",
+    "sector": "Utilities"
+  },
+  {
+    "symbol": "BBL.BK",
+    "name": "Bangkok Bank Public Company Limited",
+    "sector": "Financial Services"
+  },
+  {
+    "symbol": "BCH.BK",
+    "name": "Bangkok Chain Hospital Public Company Limited",
+    "sector": "Healthcare"
+  },
+  {
+    "symbol": "BCP.BK",
+    "name": "Bangchak Corporation Public Company Limited",
+    "sector": "Energy"
+  },
+  {
+    "symbol": "BCPG.BK",
+    "name": "BCPG Public Company Limited",
+    "sector": "Utilities"
+  },
+  {
+    "symbol": "BDMS.BK",
+    "name": "Bangkok Dusit Medical Services Public Company Limited",
+    "sector": "Healthcare"
+  },
+  {
+    "symbol": "BEM.BK",
+    "name": "Bangkok Expressway and Metro Public Company Limited",
+    "sector": "Industrials"
+  },
+  {
+    "symbol": "BGRIM.BK",
+    "name": "B.Grimm Power Public Company Limited",
+    "sector": "Utilities"
+  },
+  {
+    "symbol": "BH.BK",
+    "name": "Bumrungrad Hospital Public Company Limited",
+    "sector": "Healthcare"
+  },
+  {
+    "symbol": "BJC.BK",
+    "name": "Berli Jucker Public Company Limited",
+    "sector": "Industrials"
+  },
+  {
+    "symbol": "BLA.BK",
+    "name": "Bangkok Life Assurance Public Company Limited",
+    "sector": "Financial Services"
+  },
+  {
+    "symbol": "BTG.BK",
+    "name": "Betagro Public Company Limited",
+    "sector": "Consumer Defensive"
+  },
+  {
+    "symbol": "BTS.BK",
+    "name": "BTS Group Holdings Public Company Limited",
+    "sector": "Industrials"
+  },
+  {
+    "symbol": "CBG.BK",
+    "name": "Carabao Group Public Company Limited",
+    "sector": "Consumer Defensive"
+  },
+  {
+    "symbol": "CCET.BK",
+    "name": "Cal-Comp Electronics (Thailand) Public Company Limited",
+    "sector": "Technology"
+  },
+  {
+    "symbol": "CENTEL.BK",
+    "name": "Central Plaza Hotel Public Company Limited",
+    "sector": "Consumer Cyclical"
+  },
+  {
+    "symbol": "CHG.BK",
+    "name": "Chularat Hospital Public Company Limited",
+    "sector": "Healthcare"
+  },
+  {
+    "symbol": "CK.BK",
+    "name": "CH. Karnchang Public Company Limited",
+    "sector": "Industrials"
+  },
+  {
+    "symbol": "COM7.BK",
+    "name": "Com7 Public Company Limited",
+    "sector": "Consumer Cyclical"
+  },
+  {
+    "symbol": "CPALL.BK",
+    "name": "CP ALL Public Company Limited",
+    "sector": "Consumer Defensive"
+  },
+  {
+    "symbol": "CPF.BK",
+    "name": "Charoen Pokphand Foods Public Company Limited",
+    "sector": "Consumer Defensive"
+  },
+  {
+    "symbol": "CPN.BK",
+    "name": "Central Pattana Public Company Limited",
+    "sector": "Real Estate"
+  },
+  {
+    "symbol": "CRC.BK",
+    "name": "Central Retail Corporation Public Company Limited",
+    "sector": "Consumer Cyclical"
+  },
+  {
+    "symbol": "DELTA.BK",
+    "name": "Delta Electronics (Thailand) Public Company Limited",
+    "sector": "Industrials"
+  },
+  {
+    "symbol": "DOHOME.BK",
+    "name": "Dohome Public Company Limited",
+    "sector": "Consumer Cyclical"
+  },
+  {
+    "symbol": "EA.BK",
+    "name": "Energy Absolute Public Company Limited",
+    "sector": "Utilities"
+  },
+  {
+    "symbol": "EGCO.BK",
+    "name": "Electricity Generating Public Company Limited",
+    "sector": "Utilities"
+  },
+  {
+    "symbol": "ERW.BK",
+    "name": "The Erawan Group Public Company Limited",
+    "sector": "Consumer Cyclical"
+  },
+  {
+    "symbol": "GFPT.BK",
+    "name": "GFPT Public Company Limited",
+    "sector": "Consumer Defensive"
+  },
+  {
+    "symbol": "GLOBAL.BK",
+    "name": "Siam Global House Public Company Limited",
+    "sector": "Consumer Cyclical"
+  },
+  {
+    "symbol": "GPSC.BK",
+    "name": "Global Power Synergy Public Company Limited",
+    "sector": "Utilities"
+  },
+  {
+    "symbol": "GULF.BK",
+    "name": "Gulf Development Public Company Limited",
+    "sector": "Utilities"
+  },
+  {
+    "symbol": "GUNKUL.BK",
+    "name": "Gunkul Engineering Public Company Limited",
+    "sector": "Utilities"
+  },
+  {
+    "symbol": "HANA.BK",
+    "name": "Hana Microelectronics Public Company Limited",
+    "sector": "Technology"
+  },
+  {
+    "symbol": "HMPRO.BK",
+    "name": "Home Product Center Public Company Limited",
+    "sector": "Consumer Cyclical"
+  },
+  {
+    "symbol": "ICHI.BK",
+    "name": "Ichitan Group Public Company Limited",
+    "sector": "Consumer Defensive"
+  },
+  {
+    "symbol": "IRPC.BK",
+    "name": "IRPC Public Company Limited",
+    "sector": "Energy"
+  },
+  {
+    "symbol": "IVL.BK",
+    "name": "Indorama Ventures Public Company Limited",
+    "sector": "Basic Materials"
+  },
+  {
+    "symbol": "JMART.BK",
+    "name": "Jaymart Group Holdings Public Company Limited",
+    "sector": "Consumer Cyclical"
+  },
+  {
+    "symbol": "JMT.BK",
+    "name": "JMT Network Services Public Company Limited",
+    "sector": "Financial Services"
+  },
+  {
+    "symbol": "KBANK.BK",
+    "name": "Kasikornbank Public Company Limited",
+    "sector": "Financial Services"
+  },
+  {
+    "symbol": "KCE.BK",
+    "name": "KCE Electronics Public Company Limited",
+    "sector": "Technology"
+  },
+  {
+    "symbol": "KKP.BK",
+    "name": "Kiatnakin Phatra Bank Public Company Limited",
+    "sector": "Financial Services"
+  },
+  {
+    "symbol": "KTB.BK",
+    "name": "Krung Thai Bank Public Company Limited",
+    "sector": "Financial Services"
+  },
+  {
+    "symbol": "KTC.BK",
+    "name": "Krungthai Card Public Company Limited",
+    "sector": "Financial Services"
+  },
+  {
+    "symbol": "LH.BK",
+    "name": "Land and Houses Public Company Limited",
+    "sector": "Real Estate"
+  },
+  {
+    "symbol": "M.BK",
+    "name": "MK Restaurant Group Public Company Limited",
+    "sector": "Consumer Cyclical"
+  },
+  {
+    "symbol": "MEGA.BK",
+    "name": "Mega Lifesciences Public Company Limited",
+    "sector": "Healthcare"
+  },
+  {
+    "symbol": "MINT.BK",
+    "name": "Minor International Public Company Limited",
+    "sector": "Consumer Cyclical"
+  },
+  {
+    "symbol": "MOSHI.BK",
+    "name": "Moshi Moshi Retail Corporation Public Company Limited",
+    "sector": "Consumer Cyclical"
+  },
+  {
+    "symbol": "MRDIYT.BK",
+    "name": "MR. D.I.Y. Holding (Thailand) Public Company Limited",
+    "sector": "Consumer Cyclical"
+  },
+  {
+    "symbol": "MTC.BK",
+    "name": "Muangthai Capital Public Company Limited",
+    "sector": "Financial Services"
+  },
+  {
+    "symbol": "OR.BK",
+    "name": "PTT Oil and Retail Business Public Company Limited",
+    "sector": "Energy"
+  },
+  {
+    "symbol": "OSP.BK",
+    "name": "Osotspa Public Company Limited",
+    "sector": "Consumer Defensive"
+  },
+  {
+    "symbol": "PLANB.BK",
+    "name": "Plan B Media Public Company Limited",
+    "sector": "Communication Services"
+  },
+  {
+    "symbol": "PR9.BK",
+    "name": "Praram 9 Hospital Public Company Limited",
+    "sector": "Healthcare"
+  },
+  {
+    "symbol": "PRM.BK",
+    "name": "Prima Marine Public Company Limited",
+    "sector": "Energy"
+  },
+  {
+    "symbol": "PTG.BK",
+    "name": "PTG Energy Public Company Limited",
+    "sector": "Consumer Cyclical"
+  },
+  {
+    "symbol": "PTT.BK",
+    "name": "PTT Public Company Limited",
+    "sector": "Energy"
+  },
+  {
+    "symbol": "PTTEP.BK",
+    "name": "PTT Exploration and Production Public Company Limited",
+    "sector": "Energy"
+  },
+  {
+    "symbol": "PTTGC.BK",
+    "name": "PTT Global Chemical Public Company Limited",
+    "sector": "Basic Materials"
+  },
+  {
+    "symbol": "QHHRREIT.BK",
+    "name": "Quality Houses Hotel and Resid REIT Ord",
+    "sector": "Real Estate"
+  },
+  {
+    "symbol": "RATCH.BK",
+    "name": "Ratch Group Public Company Limited",
+    "sector": "Utilities"
+  },
+  {
+    "symbol": "RCL.BK",
+    "name": "Regional Container Lines Public Company Limited",
+    "sector": "Industrials"
+  },
+  {
+    "symbol": "SAWAD.BK",
+    "name": "Srisawad Corporation Public Company Limited",
+    "sector": "Financial Services"
+  },
+  {
+    "symbol": "SCB.BK",
+    "name": "SCB X Public Company Limited",
+    "sector": "Financial Services"
+  },
+  {
+    "symbol": "SCC.BK",
+    "name": "The Siam Cement Public Company Limited",
+    "sector": "Industrials"
+  },
+  {
+    "symbol": "SCGP.BK",
+    "name": "SCG Packaging Public Company Limited",
+    "sector": "Consumer Cyclical"
+  },
+  {
+    "symbol": "SIRI.BK",
+    "name": "Sansiri Public Company Limited",
+    "sector": "Real Estate"
+  },
+  {
+    "symbol": "SPALI.BK",
+    "name": "Supalai Public Company Limited",
+    "sector": "Real Estate"
+  },
+  {
+    "symbol": "SPRC.BK",
+    "name": "Star Petroleum Refining Public Company Limited",
+    "sector": "Energy"
+  },
+  {
+    "symbol": "STA.BK",
+    "name": "Sri Trang Agro-Industry Public Company Limited",
+    "sector": "Basic Materials"
+  },
+  {
+    "symbol": "STECON.BK",
+    "name": "Stecon Group Public Company Limited",
+    "sector": "Industrials"
+  },
+  {
+    "symbol": "STGT.BK",
+    "name": "Sri Trang Gloves (Thailand) Public Company Limited",
+    "sector": "Basic Materials"
+  },
+  {
+    "symbol": "TASCO.BK",
+    "name": "Tipco Asphalt Public Company Limited",
+    "sector": "Basic Materials"
+  },
+  {
+    "symbol": "TCAP.BK",
+    "name": "Thanachart Capital Public Company Limited",
+    "sector": "Financial Services"
+  },
+  {
+    "symbol": "TFG.BK",
+    "name": "Thaifoods Group Public Company Limited",
+    "sector": "Consumer Defensive"
+  },
+  {
+    "symbol": "THAI.BK",
+    "name": "Thai Airways International Public Company Limited",
+    "sector": "Industrials"
+  },
+  {
+    "symbol": "THCOM.BK",
+    "name": "Thaicom Public Company Limited",
+    "sector": "Communication Services"
+  },
+  {
+    "symbol": "TIDLOR.BK",
+    "name": "Tidlor Holdings Public Company Limited",
+    "sector": "Financial Services"
+  },
+  {
+    "symbol": "TISCO.BK",
+    "name": "TISCO Financial Group Public Company Limited",
+    "sector": "Financial Services"
+  },
+  {
+    "symbol": "TLI.BK",
+    "name": "Thai Life Insurance Public Company Limited",
+    "sector": "Financial Services"
+  },
+  {
+    "symbol": "TOA.BK",
+    "name": "TOA Paint (Thailand) Public Company Limited",
+    "sector": "Basic Materials"
+  },
+  {
+    "symbol": "TOP.BK",
+    "name": "Thai Oil Public Company Limited",
+    "sector": "Energy"
+  },
+  {
+    "symbol": "TRUE.BK",
+    "name": "True Corporation Public Company Limited",
+    "sector": "Communication Services"
+  },
+  {
+    "symbol": "TTB.BK",
+    "name": "TMBThanachart Bank Public Company Limited",
+    "sector": "Financial Services"
+  },
+  {
+    "symbol": "TU.BK",
+    "name": "Thai Union Group Public Company Limited",
+    "sector": "Consumer Defensive"
+  },
+  {
+    "symbol": "VGI.BK",
+    "name": "VGI Public Company Limited",
+    "sector": "Industrials"
+  },
+  {
+    "symbol": "WHA.BK",
+    "name": "WHA Corporation Public Company Limited",
+    "sector": "Real Estate"
+  },
+  {
+    "symbol": "WHAUP.BK",
+    "name": "WHA Utilities and Power Public Company Limited",
+    "sector": "Utilities"
+  }
+]

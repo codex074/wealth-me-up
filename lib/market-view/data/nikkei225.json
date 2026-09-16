@@ -1,0 +1,1127 @@
+[
+  {
+    "symbol": "1332.T",
+    "name": "Nissui Corporation",
+    "sector": "Fishery"
+  },
+  {
+    "symbol": "1605.T",
+    "name": "Inpex Corp.",
+    "sector": "Mining"
+  },
+  {
+    "symbol": "1721.T",
+    "name": "Comsys Holdings Corp.",
+    "sector": "Construction"
+  },
+  {
+    "symbol": "1801.T",
+    "name": "Taisei Corp.",
+    "sector": "Construction"
+  },
+  {
+    "symbol": "1802.T",
+    "name": "Obayashi Corp.",
+    "sector": "Construction"
+  },
+  {
+    "symbol": "1803.T",
+    "name": "Shimizu Corp.",
+    "sector": "Construction"
+  },
+  {
+    "symbol": "1808.T",
+    "name": "Haseko Corp.",
+    "sector": "Construction"
+  },
+  {
+    "symbol": "1812.T",
+    "name": "Kajima Corp.",
+    "sector": "Construction"
+  },
+  {
+    "symbol": "1925.T",
+    "name": "Daiwa House Industry Co., Ltd.",
+    "sector": "Construction"
+  },
+  {
+    "symbol": "1928.T",
+    "name": "Sekisui House, Ltd.",
+    "sector": "Construction"
+  },
+  {
+    "symbol": "1963.T",
+    "name": "JGC Corporation",
+    "sector": "Construction"
+  },
+  {
+    "symbol": "2002.T",
+    "name": "Nisshin Seifun Group Inc.",
+    "sector": "Foods"
+  },
+  {
+    "symbol": "2269.T",
+    "name": "Meiji Holdings Company, Limited",
+    "sector": "Foods"
+  },
+  {
+    "symbol": "2282.T",
+    "name": "NH Foods Ltd.",
+    "sector": "Foods"
+  },
+  {
+    "symbol": "2413.T",
+    "name": "M3 Inc.",
+    "sector": "Services"
+  },
+  {
+    "symbol": "2432.T",
+    "name": "Dena Co., Ltd.",
+    "sector": "Services"
+  },
+  {
+    "symbol": "2501.T",
+    "name": "Sapporo Holdings Ltd.",
+    "sector": "Foods"
+  },
+  {
+    "symbol": "2502.T",
+    "name": "Asahi Group Holdings, Ltd.",
+    "sector": "Foods"
+  },
+  {
+    "symbol": "2503.T",
+    "name": "Kirin Holdings Co, Ltd",
+    "sector": "Foods"
+  },
+  {
+    "symbol": "2768.T",
+    "name": "Sojitz Corp.",
+    "sector": "Trading companies"
+  },
+  {
+    "symbol": "2801.T",
+    "name": "Kikkoman Corp.",
+    "sector": "Foods"
+  },
+  {
+    "symbol": "2802.T",
+    "name": "Ajinomoto Co., Inc.",
+    "sector": "Foods"
+  },
+  {
+    "symbol": "285A.T",
+    "name": "Kioxia Holdings Corp.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "2871.T",
+    "name": "Nichirei Corp.",
+    "sector": "Foods"
+  },
+  {
+    "symbol": "2914.T",
+    "name": "Japan Tobacco Inc.",
+    "sector": "Foods"
+  },
+  {
+    "symbol": "3086.T",
+    "name": "J. Front Retailing Co., Ltd.",
+    "sector": "Retail"
+  },
+  {
+    "symbol": "3092.T",
+    "name": "ZOZO Co., Ltd",
+    "sector": "Retail"
+  },
+  {
+    "symbol": "3099.T",
+    "name": "Isetan Mitsukoshi Holdings Ltd.",
+    "sector": "Retail"
+  },
+  {
+    "symbol": "3289.T",
+    "name": "Tokyu Land Corp.",
+    "sector": "Real estate"
+  },
+  {
+    "symbol": "3382.T",
+    "name": "Seven & I Holdings Co., Ltd.",
+    "sector": "Retail"
+  },
+  {
+    "symbol": "3401.T",
+    "name": "Teijin Ltd.",
+    "sector": "Textiles & apparel"
+  },
+  {
+    "symbol": "3402.T",
+    "name": "Toray Industries, Inc.",
+    "sector": "Textiles & apparel"
+  },
+  {
+    "symbol": "3405.T",
+    "name": "Kuraray Co., Ltd.",
+    "sector": "Chemicals"
+  },
+  {
+    "symbol": "3407.T",
+    "name": "Asahi Kasei Corp.",
+    "sector": "Chemicals"
+  },
+  {
+    "symbol": "3436.T",
+    "name": "SUMCO Corp.",
+    "sector": "Nonferrous metals"
+  },
+  {
+    "symbol": "3659.T",
+    "name": "Nexon Co., Ltd.",
+    "sector": "Services"
+  },
+  {
+    "symbol": "3697.T",
+    "name": "SHIFT Inc.",
+    "sector": "Services"
+  },
+  {
+    "symbol": "3861.T",
+    "name": "Oji Holdings Corporation",
+    "sector": "Pulp & paper"
+  },
+  {
+    "symbol": "4004.T",
+    "name": "Resonac Corp.",
+    "sector": "Chemicals"
+  },
+  {
+    "symbol": "4005.T",
+    "name": "Sumitomo Chemical Co., Ltd.",
+    "sector": "Chemicals"
+  },
+  {
+    "symbol": "4021.T",
+    "name": "Nissan Chemical Industries, Ltd.",
+    "sector": "Chemicals"
+  },
+  {
+    "symbol": "4042.T",
+    "name": "Tosoh Corp.",
+    "sector": "Chemicals"
+  },
+  {
+    "symbol": "4043.T",
+    "name": "Tokuyama Corporation",
+    "sector": "Chemicals"
+  },
+  {
+    "symbol": "4061.T",
+    "name": "Denka Co., Ltd.",
+    "sector": "Chemicals"
+  },
+  {
+    "symbol": "4063.T",
+    "name": "Shin-Etsu Chemical Co., Ltd.",
+    "sector": "Chemicals"
+  },
+  {
+    "symbol": "4151.T",
+    "name": "Kyowa Hakko Kirin Co., Ltd.",
+    "sector": "Pharmaceuticals"
+  },
+  {
+    "symbol": "4183.T",
+    "name": "Mitsui Chemicals, Inc.",
+    "sector": "Chemicals"
+  },
+  {
+    "symbol": "4188.T",
+    "name": "Mitsubishi Chemical Holdings Corp.",
+    "sector": "Chemicals"
+  },
+  {
+    "symbol": "4208.T",
+    "name": "Ube Industries, Ltd.",
+    "sector": "Chemicals"
+  },
+  {
+    "symbol": "4307.T",
+    "name": "Nomura Research Institute Ltd.",
+    "sector": "Services"
+  },
+  {
+    "symbol": "4324.T",
+    "name": "Dentsu Inc.",
+    "sector": "Services"
+  },
+  {
+    "symbol": "4385.T",
+    "name": "Mercari Inc.",
+    "sector": "Services"
+  },
+  {
+    "symbol": "4452.T",
+    "name": "Kao Corp.",
+    "sector": "Chemicals"
+  },
+  {
+    "symbol": "4502.T",
+    "name": "Takeda Pharmaceutical Company Limited",
+    "sector": "Pharmaceuticals"
+  },
+  {
+    "symbol": "4503.T",
+    "name": "Astellas Pharma Inc.",
+    "sector": "Pharmaceuticals"
+  },
+  {
+    "symbol": "4506.T",
+    "name": "Sumitomo Dainippon Pharma Co., Ltd.",
+    "sector": "Pharmaceuticals"
+  },
+  {
+    "symbol": "4507.T",
+    "name": "Shionogi & Co., Ltd.",
+    "sector": "Pharmaceuticals"
+  },
+  {
+    "symbol": "4519.T",
+    "name": "Chugai Pharmaceutical Co., Ltd.",
+    "sector": "Pharmaceuticals"
+  },
+  {
+    "symbol": "4523.T",
+    "name": "Eisai Co., Ltd.",
+    "sector": "Pharmaceuticals"
+  },
+  {
+    "symbol": "4543.T",
+    "name": "Terumo Corp.",
+    "sector": "Precision instruments"
+  },
+  {
+    "symbol": "4568.T",
+    "name": "Daiichi Sankyo Company, Limited",
+    "sector": "Pharmaceuticals"
+  },
+  {
+    "symbol": "4578.T",
+    "name": "Otsuka Holdings Co., Ltd.",
+    "sector": "Pharmaceuticals"
+  },
+  {
+    "symbol": "4661.T",
+    "name": "Oriental Land Co., Ltd.",
+    "sector": "Services"
+  },
+  {
+    "symbol": "4689.T",
+    "name": "LY Corporation",
+    "sector": "Services"
+  },
+  {
+    "symbol": "4704.T",
+    "name": "Trend Micro Inc.",
+    "sector": "Services"
+  },
+  {
+    "symbol": "4751.T",
+    "name": "CyberAgent Inc.",
+    "sector": "Services"
+  },
+  {
+    "symbol": "4755.T",
+    "name": "Rakuten Inc.",
+    "sector": "Services"
+  },
+  {
+    "symbol": "4901.T",
+    "name": "Fujifilm Holdings Corp.",
+    "sector": "Chemicals"
+  },
+  {
+    "symbol": "4902.T",
+    "name": "Konica Minolta Holdings, Inc.",
+    "sector": "Precision instruments"
+  },
+  {
+    "symbol": "4911.T",
+    "name": "Shiseido Co., Ltd.",
+    "sector": "Chemicals"
+  },
+  {
+    "symbol": "5019.T",
+    "name": "Idemitsu Kosan Co., Ltd",
+    "sector": "Petroleum"
+  },
+  {
+    "symbol": "5020.T",
+    "name": "Eneos Holdings",
+    "sector": "Petroleum"
+  },
+  {
+    "symbol": "5101.T",
+    "name": "The Yokohama Rubber Co., Ltd.",
+    "sector": "Rubber"
+  },
+  {
+    "symbol": "5108.T",
+    "name": "Bridgestone Corp.",
+    "sector": "Rubber"
+  },
+  {
+    "symbol": "5201.T",
+    "name": "AGC Inc.",
+    "sector": "Glass & ceramics"
+  },
+  {
+    "symbol": "5214.T",
+    "name": "Nippon Electric Glass Co., Ltd.",
+    "sector": "Glass & ceramics"
+  },
+  {
+    "symbol": "5233.T",
+    "name": "Taiheiyo Cement Corp.",
+    "sector": "Glass & ceramics"
+  },
+  {
+    "symbol": "5301.T",
+    "name": "Tokai Carbon Co., Ltd.",
+    "sector": "Glass & ceramics"
+  },
+  {
+    "symbol": "5332.T",
+    "name": "Toto Ltd.",
+    "sector": "Glass & ceramics"
+  },
+  {
+    "symbol": "5333.T",
+    "name": "NGK Insulators, Ltd.",
+    "sector": "Glass & ceramics"
+  },
+  {
+    "symbol": "5401.T",
+    "name": "Nippon Steel Corp.",
+    "sector": "Steel"
+  },
+  {
+    "symbol": "5406.T",
+    "name": "Kobe Steel, Ltd.",
+    "sector": "Steel"
+  },
+  {
+    "symbol": "5411.T",
+    "name": "JFE Holdings, Inc.",
+    "sector": "Steel"
+  },
+  {
+    "symbol": "543A.T",
+    "name": "Archion Corp.",
+    "sector": "Automotive"
+  },
+  {
+    "symbol": "5631.T",
+    "name": "The Japan Steel Works, Ltd.",
+    "sector": "Machinery"
+  },
+  {
+    "symbol": "5706.T",
+    "name": "Mitsui Mining & Smelting Co., Ltd.",
+    "sector": "Nonferrous metals"
+  },
+  {
+    "symbol": "5711.T",
+    "name": "Mitsubishi Materials Corp.",
+    "sector": "Nonferrous metals"
+  },
+  {
+    "symbol": "5713.T",
+    "name": "Sumitomo Metal Mining Co., Ltd.",
+    "sector": "Nonferrous metals"
+  },
+  {
+    "symbol": "5714.T",
+    "name": "Dowa Holdings Co., Ltd.",
+    "sector": "Nonferrous metals"
+  },
+  {
+    "symbol": "5801.T",
+    "name": "The Furukawa Electric Co., Ltd.",
+    "sector": "Nonferrous metals"
+  },
+  {
+    "symbol": "5802.T",
+    "name": "Sumitomo Electric Industries, Ltd.",
+    "sector": "Nonferrous metals"
+  },
+  {
+    "symbol": "5803.T",
+    "name": "Fujikura Ltd.",
+    "sector": "Nonferrous metals"
+  },
+  {
+    "symbol": "5831.T",
+    "name": "Shizuoka Financial Group",
+    "sector": "Banking"
+  },
+  {
+    "symbol": "6098.T",
+    "name": "Recruit Holdings Co., Ltd.",
+    "sector": "Services"
+  },
+  {
+    "symbol": "6103.T",
+    "name": "Okuma Holdings, Inc.",
+    "sector": "Machinery"
+  },
+  {
+    "symbol": "6113.T",
+    "name": "Amada Co. Ltd.",
+    "sector": "Machinery"
+  },
+  {
+    "symbol": "6146.T",
+    "name": "Disco Corporation Ltd.",
+    "sector": "Precision instruments"
+  },
+  {
+    "symbol": "6178.T",
+    "name": "Japan Post Holdings Co., Ltd.",
+    "sector": "Services"
+  },
+  {
+    "symbol": "6273.T",
+    "name": "SMC Corporation",
+    "sector": "Machinery"
+  },
+  {
+    "symbol": "6301.T",
+    "name": "Komatsu Ltd.",
+    "sector": "Machinery"
+  },
+  {
+    "symbol": "6302.T",
+    "name": "Sumitomo Heavy Industries, Ltd.",
+    "sector": "Machinery"
+  },
+  {
+    "symbol": "6305.T",
+    "name": "Hitachi Construction Machinery Co., Ltd.",
+    "sector": "Machinery"
+  },
+  {
+    "symbol": "6326.T",
+    "name": "Kubota Corp.",
+    "sector": "Machinery"
+  },
+  {
+    "symbol": "6361.T",
+    "name": "Ebara Corp.",
+    "sector": "Machinery"
+  },
+  {
+    "symbol": "6367.T",
+    "name": "Daikin Industries, Ltd.",
+    "sector": "Machinery"
+  },
+  {
+    "symbol": "6471.T",
+    "name": "NSK Ltd.",
+    "sector": "Machinery"
+  },
+  {
+    "symbol": "6472.T",
+    "name": "NTN Corp.",
+    "sector": "Machinery"
+  },
+  {
+    "symbol": "6473.T",
+    "name": "JTEKT Corp.",
+    "sector": "Machinery"
+  },
+  {
+    "symbol": "6479.T",
+    "name": "MinebeaMitsumi, Inc.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6501.T",
+    "name": "Hitachi, Ltd.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6503.T",
+    "name": "Mitsubishi Electric Corp.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6504.T",
+    "name": "Fuji Electric Co., Ltd.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6506.T",
+    "name": "Yaskawa Electric Corporation, Limited",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6526.T",
+    "name": "Socionext Inc.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6532.T",
+    "name": "Baycurrent Inc.",
+    "sector": "Services"
+  },
+  {
+    "symbol": "6594.T",
+    "name": "Nidec",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6645.T",
+    "name": "Omron Corp.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6701.T",
+    "name": "NEC Corp.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6702.T",
+    "name": "Fujitsu Ltd.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6723.T",
+    "name": "Renesas Electronics",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6724.T",
+    "name": "Seiko Epson Corp.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6752.T",
+    "name": "Panasonic Corp.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6753.T",
+    "name": "Sharp Corporation",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6758.T",
+    "name": "Sony Corp.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6762.T",
+    "name": "TDK Corp.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6770.T",
+    "name": "Alps Alpine Co., Ltd.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6841.T",
+    "name": "Yokogawa Electric Corp.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6857.T",
+    "name": "Advantest Corp.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6861.T",
+    "name": "Keyence Corp.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6902.T",
+    "name": "Denso Corp.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6920.T",
+    "name": "Lasertec",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6954.T",
+    "name": "FANUC Corp.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6963.T",
+    "name": "Rohm Co., Ltd.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6971.T",
+    "name": "Kyocera Corp.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6976.T",
+    "name": "Taiyo Yuden Co., Ltd.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6981.T",
+    "name": "Murata Manufacturing Co., Ltd.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "6988.T",
+    "name": "Nitto Denko",
+    "sector": "Chemicals"
+  },
+  {
+    "symbol": "7004.T",
+    "name": "Kanadevia Corp.",
+    "sector": "Machinery"
+  },
+  {
+    "symbol": "7011.T",
+    "name": "Mitsubishi Heavy Industries, Ltd.",
+    "sector": "Machinery"
+  },
+  {
+    "symbol": "7012.T",
+    "name": "Kawasaki Heavy Industries, Ltd.",
+    "sector": "Shipbuilding"
+  },
+  {
+    "symbol": "7013.T",
+    "name": "IHI Corp.",
+    "sector": "Machinery"
+  },
+  {
+    "symbol": "7186.T",
+    "name": "Yokohama Financial Group",
+    "sector": "Banking"
+  },
+  {
+    "symbol": "7201.T",
+    "name": "Nissan Motor Co., Ltd.",
+    "sector": "Automotive"
+  },
+  {
+    "symbol": "7202.T",
+    "name": "Isuzu Motors Ltd.",
+    "sector": "Automotive"
+  },
+  {
+    "symbol": "7203.T",
+    "name": "Toyota Motor Corp.",
+    "sector": "Automotive"
+  },
+  {
+    "symbol": "7211.T",
+    "name": "Mitsubishi Motors Corp.",
+    "sector": "Automotive"
+  },
+  {
+    "symbol": "7261.T",
+    "name": "Mazda Motor Corp.",
+    "sector": "Automotive"
+  },
+  {
+    "symbol": "7267.T",
+    "name": "Honda Motor Co., Ltd.",
+    "sector": "Automotive"
+  },
+  {
+    "symbol": "7269.T",
+    "name": "Suzuki Motor Corp.",
+    "sector": "Automotive"
+  },
+  {
+    "symbol": "7270.T",
+    "name": "Subaru Corp.",
+    "sector": "Automotive"
+  },
+  {
+    "symbol": "7272.T",
+    "name": "Yamaha Motor Company, Ltd.",
+    "sector": "Automotive"
+  },
+  {
+    "symbol": "7453.T",
+    "name": "Muji Co., Ltd",
+    "sector": "Retail"
+  },
+  {
+    "symbol": "7532.T",
+    "name": "Pan Pacific International Holdings Corp.",
+    "sector": "Retail"
+  },
+  {
+    "symbol": "7731.T",
+    "name": "Nikon Corp.",
+    "sector": "Precision instruments"
+  },
+  {
+    "symbol": "7733.T",
+    "name": "Olympus Corp.",
+    "sector": "Precision instruments"
+  },
+  {
+    "symbol": "7735.T",
+    "name": "SCREEN Holdings",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "7741.T",
+    "name": "Hoya Corporation",
+    "sector": "Precision instruments"
+  },
+  {
+    "symbol": "7751.T",
+    "name": "Canon Inc.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "7752.T",
+    "name": "Ricoh Co., Ltd.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "7832.T",
+    "name": "Bandai Namco Holdings, Inc.",
+    "sector": "Other manufacturing"
+  },
+  {
+    "symbol": "7911.T",
+    "name": "Toppan Printing Co., Ltd.",
+    "sector": "Other manufacturing"
+  },
+  {
+    "symbol": "7912.T",
+    "name": "Dai Nippon Printing Co., Ltd.",
+    "sector": "Other manufacturing"
+  },
+  {
+    "symbol": "7951.T",
+    "name": "Yamaha Corporation",
+    "sector": "Other manufacturing"
+  },
+  {
+    "symbol": "7974.T",
+    "name": "Nintendo Co., Ltd.",
+    "sector": "Services"
+  },
+  {
+    "symbol": "8001.T",
+    "name": "Itochu Corp.",
+    "sector": "Trading companies"
+  },
+  {
+    "symbol": "8002.T",
+    "name": "Marubeni Corp.",
+    "sector": "Trading companies"
+  },
+  {
+    "symbol": "8015.T",
+    "name": "Toyota Tsusho Corp.",
+    "sector": "Trading companies"
+  },
+  {
+    "symbol": "8031.T",
+    "name": "Mitsui & Co., Ltd.",
+    "sector": "Trading companies"
+  },
+  {
+    "symbol": "8035.T",
+    "name": "Tokyo Electron Ltd.",
+    "sector": "Electric machinery"
+  },
+  {
+    "symbol": "8053.T",
+    "name": "Sumitomo Corp.",
+    "sector": "Trading companies"
+  },
+  {
+    "symbol": "8058.T",
+    "name": "Mitsubishi Corp.",
+    "sector": "Trading companies"
+  },
+  {
+    "symbol": "8233.T",
+    "name": "Takashimaya Co., Ltd.",
+    "sector": "Retail"
+  },
+  {
+    "symbol": "8252.T",
+    "name": "Marui Group Co., Ltd.",
+    "sector": "Retail"
+  },
+  {
+    "symbol": "8253.T",
+    "name": "Credit Saison Co., Ltd.",
+    "sector": "Other financial services"
+  },
+  {
+    "symbol": "8267.T",
+    "name": "Aeon Co., Ltd.",
+    "sector": "Retail"
+  },
+  {
+    "symbol": "8304.T",
+    "name": "Aozora Bank, Ltd.",
+    "sector": "Banking"
+  },
+  {
+    "symbol": "8306.T",
+    "name": "Mitsubishi UFJ Financial Group, Inc.",
+    "sector": "Banking"
+  },
+  {
+    "symbol": "8308.T",
+    "name": "Resona Holdings, Inc.",
+    "sector": "Banking"
+  },
+  {
+    "symbol": "8309.T",
+    "name": "Sumitomo Mitsui Trust Holdings, Inc.",
+    "sector": "Banking"
+  },
+  {
+    "symbol": "8316.T",
+    "name": "Sumitomo Mitsui Financial Group, Inc.",
+    "sector": "Banking"
+  },
+  {
+    "symbol": "8331.T",
+    "name": "The Chiba Bank, Ltd.",
+    "sector": "Banking"
+  },
+  {
+    "symbol": "8354.T",
+    "name": "Fukuoka Financial Group, Inc.",
+    "sector": "Banking"
+  },
+  {
+    "symbol": "8411.T",
+    "name": "Mizuho Financial Group, Inc.",
+    "sector": "Banking"
+  },
+  {
+    "symbol": "8591.T",
+    "name": "Orix Co.",
+    "sector": "Other financial services"
+  },
+  {
+    "symbol": "8601.T",
+    "name": "Daiwa Securities Group Inc.",
+    "sector": "Securities"
+  },
+  {
+    "symbol": "8604.T",
+    "name": "Nomura Holdings, Inc.",
+    "sector": "Securities"
+  },
+  {
+    "symbol": "8630.T",
+    "name": "Sompo Holdings, Inc.",
+    "sector": "Insurance"
+  },
+  {
+    "symbol": "8697.T",
+    "name": "Japan Exchange Group Inc.",
+    "sector": "Other financial services"
+  },
+  {
+    "symbol": "8725.T",
+    "name": "MS&AD Insurance Group, Inc.",
+    "sector": "Insurance"
+  },
+  {
+    "symbol": "8750.T",
+    "name": "Dai-ichi Life Insurance Company, Limited",
+    "sector": "Insurance"
+  },
+  {
+    "symbol": "8766.T",
+    "name": "Tokio Marine Holdings, Inc.",
+    "sector": "Insurance"
+  },
+  {
+    "symbol": "8795.T",
+    "name": "T&D Holdings, Inc.",
+    "sector": "Insurance"
+  },
+  {
+    "symbol": "8801.T",
+    "name": "Mitsui Fudosan Co., Ltd",
+    "sector": "Real estate"
+  },
+  {
+    "symbol": "8802.T",
+    "name": "Mitsubishi Estate Co., Ltd.",
+    "sector": "Real estate"
+  },
+  {
+    "symbol": "8804.T",
+    "name": "Tokyo Tatemono Co., Ltd.",
+    "sector": "Real estate"
+  },
+  {
+    "symbol": "8830.T",
+    "name": "Sumitomo Realty & Development Co., Ltd.",
+    "sector": "Real estate"
+  },
+  {
+    "symbol": "9001.T",
+    "name": "Tobu Railway Co., Ltd.",
+    "sector": "Railway/bus"
+  },
+  {
+    "symbol": "9005.T",
+    "name": "Tokyu Corp.",
+    "sector": "Railway/bus"
+  },
+  {
+    "symbol": "9007.T",
+    "name": "Odakyu Electric Railway Co., Ltd.",
+    "sector": "Railway/bus"
+  },
+  {
+    "symbol": "9008.T",
+    "name": "Keio Corp.",
+    "sector": "Railway/bus"
+  },
+  {
+    "symbol": "9009.T",
+    "name": "Keisei Electric Railway Co., Ltd.",
+    "sector": "Railway/bus"
+  },
+  {
+    "symbol": "9020.T",
+    "name": "East Japan Railway Company",
+    "sector": "Railway/bus"
+  },
+  {
+    "symbol": "9021.T",
+    "name": "West Japan Railway Company",
+    "sector": "Railway/bus"
+  },
+  {
+    "symbol": "9022.T",
+    "name": "Central Japan Railway Company",
+    "sector": "Railway/bus"
+  },
+  {
+    "symbol": "9064.T",
+    "name": "Yamato Holdings Co., Ltd.",
+    "sector": "Land transport"
+  },
+  {
+    "symbol": "9101.T",
+    "name": "Nippon Yusen K.K.",
+    "sector": "Marine transport"
+  },
+  {
+    "symbol": "9104.T",
+    "name": "Mitsui O.S.K. Lines, Ltd.",
+    "sector": "Marine transport"
+  },
+  {
+    "symbol": "9107.T",
+    "name": "Kawasaki Kisen Kaisha, Ltd.",
+    "sector": "Marine transport"
+  },
+  {
+    "symbol": "9147.T",
+    "name": "Nippon Express Holdings Inc.",
+    "sector": "Land transport"
+  },
+  {
+    "symbol": "9201.T",
+    "name": "Japan Airlines Co., Ltd.",
+    "sector": "Air transport"
+  },
+  {
+    "symbol": "9202.T",
+    "name": "ANA Holdings Inc.",
+    "sector": "Air transport"
+  },
+  {
+    "symbol": "9432.T",
+    "name": "Nippon Telegraph & Telephone Corp.",
+    "sector": "Communications"
+  },
+  {
+    "symbol": "9433.T",
+    "name": "KDDI Corp.",
+    "sector": "Communications"
+  },
+  {
+    "symbol": "9434.T",
+    "name": "SoftBank Corp.",
+    "sector": "Communications"
+  },
+  {
+    "symbol": "9501.T",
+    "name": "Tokyo Electric Power Company Holdings, Incorporated",
+    "sector": "Electric power"
+  },
+  {
+    "symbol": "9502.T",
+    "name": "Chubu Electric Power Co., Inc.",
+    "sector": "Electric power"
+  },
+  {
+    "symbol": "9503.T",
+    "name": "The Kansai Electric Power Co., Inc.",
+    "sector": "Electric power"
+  },
+  {
+    "symbol": "9531.T",
+    "name": "Tokyo Gas Co., Ltd.",
+    "sector": "Gas"
+  },
+  {
+    "symbol": "9532.T",
+    "name": "Osaka Gas Co., Ltd.",
+    "sector": "Gas"
+  },
+  {
+    "symbol": "9602.T",
+    "name": "Toho Co., Ltd.",
+    "sector": "Services"
+  },
+  {
+    "symbol": "9735.T",
+    "name": "Secom Co., Ltd.",
+    "sector": "Services"
+  },
+  {
+    "symbol": "9766.T",
+    "name": "Konami Corp.",
+    "sector": "Services"
+  },
+  {
+    "symbol": "9843.T",
+    "name": "Nitori Holdings Co., Ltd.",
+    "sector": "Retail"
+  },
+  {
+    "symbol": "9983.T",
+    "name": "Fast Retailing Co., Ltd.",
+    "sector": "Retail"
+  },
+  {
+    "symbol": "9984.T",
+    "name": "SoftBank Group Corp.",
+    "sector": "Communications"
+  }
+]

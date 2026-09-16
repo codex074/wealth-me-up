@@ -1,0 +1,427 @@
+[
+  {
+    "symbol": "0001.HK",
+    "name": "CK Hutchison Holdings Limited",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "0002.HK",
+    "name": "CLP Holdings Limited",
+    "sector": "Utilities"
+  },
+  {
+    "symbol": "0003.HK",
+    "name": "Hong Kong and China Gas Company Limited",
+    "sector": "Utilities"
+  },
+  {
+    "symbol": "0005.HK",
+    "name": "HSBC Holdings plc",
+    "sector": "Finance"
+  },
+  {
+    "symbol": "0006.HK",
+    "name": "Power Assets Holdings Limited",
+    "sector": "Utilities"
+  },
+  {
+    "symbol": "0012.HK",
+    "name": "Henderson Land Development Company Limited",
+    "sector": "Properties"
+  },
+  {
+    "symbol": "0016.HK",
+    "name": "Sun Hung Kai Properties Limited",
+    "sector": "Properties"
+  },
+  {
+    "symbol": "0027.HK",
+    "name": "Galaxy Entertainment Group Ltd.",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "0066.HK",
+    "name": "MTR Corporation Ltd",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "0101.HK",
+    "name": "Hang Lung Properties Limited",
+    "sector": "Properties"
+  },
+  {
+    "symbol": "0175.HK",
+    "name": "Geely Auto",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "0241.HK",
+    "name": "Alibaba Health",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "0267.HK",
+    "name": "CITIC Limited",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "0285.HK",
+    "name": "BYD Electronics",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "0288.HK",
+    "name": "WH Group",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "0291.HK",
+    "name": "China Resources Beer",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "0300.HK",
+    "name": "Midea Group",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "0316.HK",
+    "name": "Orient Overseas (International) Limited",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "0322.HK",
+    "name": "Tingyi",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "0386.HK",
+    "name": "Sinopec Corp",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "0388.HK",
+    "name": "HKEx Limited",
+    "sector": "Finance"
+  },
+  {
+    "symbol": "0669.HK",
+    "name": "Techtronic Industries",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "0688.HK",
+    "name": "China Overseas Land & Investment Limited",
+    "sector": "Properties"
+  },
+  {
+    "symbol": "0700.HK",
+    "name": "Tencent Holdings Limited",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "0762.HK",
+    "name": "China Unicom",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "0823.HK",
+    "name": "Link REIT",
+    "sector": "Properties"
+  },
+  {
+    "symbol": "0836.HK",
+    "name": "China Resources Power",
+    "sector": "Utilities"
+  },
+  {
+    "symbol": "0857.HK",
+    "name": "PetroChina Company Limited",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "0868.HK",
+    "name": "Xinyi Glass",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "0881.HK",
+    "name": "Zhongsheng Group",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "0883.HK",
+    "name": "CNOOC Limited",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "0939.HK",
+    "name": "China Construction Bank",
+    "sector": "Finance"
+  },
+  {
+    "symbol": "0941.HK",
+    "name": "China Mobile Ltd",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "0960.HK",
+    "name": "Longfor Properties",
+    "sector": "Properties"
+  },
+  {
+    "symbol": "0968.HK",
+    "name": "Xinyi Solar",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "0981.HK",
+    "name": "Semiconductor Manufacturing International Corporation",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "0992.HK",
+    "name": "Lenovo",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "1024.HK",
+    "name": "Kuaishou",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "1038.HK",
+    "name": "Cheung Kong Infrastructure Holdings Limited",
+    "sector": "Utilities"
+  },
+  {
+    "symbol": "1044.HK",
+    "name": "Hengan International Group Co. Ltd",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "1088.HK",
+    "name": "China Shenhua Energy",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "1093.HK",
+    "name": "CSPC Pharmaceutical Group",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "1099.HK",
+    "name": "Sinopharm Group",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "1109.HK",
+    "name": "China Resources Land Limited",
+    "sector": "Properties"
+  },
+  {
+    "symbol": "1113.HK",
+    "name": "CK Asset Holdings",
+    "sector": "Properties"
+  },
+  {
+    "symbol": "1177.HK",
+    "name": "Sino Biopharm",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "1209.HK",
+    "name": "China Resources Mixc Lifestyle",
+    "sector": "Properties"
+  },
+  {
+    "symbol": "1211.HK",
+    "name": "BYD Company",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "1299.HK",
+    "name": "AIA Group Limited",
+    "sector": "Finance"
+  },
+  {
+    "symbol": "1378.HK",
+    "name": "China Hongqiao Group",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "1398.HK",
+    "name": "Industrial and Commercial Bank of China",
+    "sector": "Finance"
+  },
+  {
+    "symbol": "1810.HK",
+    "name": "Xiaomi",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "1876.HK",
+    "name": "Budweiser Brewing Company APAC",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "1928.HK",
+    "name": "Sands China",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "1929.HK",
+    "name": "Chow Tai Fook",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "1997.HK",
+    "name": "Wharf Real Estate Investment Company Limited",
+    "sector": "Properties"
+  },
+  {
+    "symbol": "2015.HK",
+    "name": "Li Auto",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "2020.HK",
+    "name": "Anta Sports",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "2057.HK",
+    "name": "ZTO Express",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "2269.HK",
+    "name": "WuXi Biologics",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "2313.HK",
+    "name": "Shenzhou International",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "2318.HK",
+    "name": "Ping An Insurance",
+    "sector": "Finance"
+  },
+  {
+    "symbol": "2319.HK",
+    "name": "Mengniu Dairy",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "2331.HK",
+    "name": "Li-Ning",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "2359.HK",
+    "name": "WuXi AppTec",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "2382.HK",
+    "name": "Sunny Optical",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "2388.HK",
+    "name": "BOC Hong Kong (Holdings) Ltd",
+    "sector": "Finance"
+  },
+  {
+    "symbol": "2618.HK",
+    "name": "JD Logistics",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "2628.HK",
+    "name": "China Life",
+    "sector": "Finance"
+  },
+  {
+    "symbol": "2688.HK",
+    "name": "ENN Energy",
+    "sector": "Utilities"
+  },
+  {
+    "symbol": "2899.HK",
+    "name": "Zijin Mining",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "3690.HK",
+    "name": "Meituan",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "3692.HK",
+    "name": "Hansoh Pharmaceutical Group",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "3968.HK",
+    "name": "China Merchants Bank",
+    "sector": "Finance"
+  },
+  {
+    "symbol": "3988.HK",
+    "name": "Bank of China Ltd",
+    "sector": "Finance"
+  },
+  {
+    "symbol": "6618.HK",
+    "name": "JD Health",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "6690.HK",
+    "name": "Haier",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "6862.HK",
+    "name": "Haidilao",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "9618.HK",
+    "name": "JD.com",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "9633.HK",
+    "name": "Nongfu Spring",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "9888.HK",
+    "name": "Baidu",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "9961.HK",
+    "name": "Trip.com Group",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "9988.HK",
+    "name": "Alibaba Group",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "9992.HK",
+    "name": "Pop Mart",
+    "sector": "Commerce & Industry"
+  },
+  {
+    "symbol": "9999.HK",
+    "name": "NetEase",
+    "sector": "Commerce & Industry"
+  }
+]
