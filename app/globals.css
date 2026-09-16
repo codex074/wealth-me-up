@@ -136,4 +136,15 @@ body{background:var(--background);color:var(--ink);font-family:"IBM Plex Sans Th
 .tfex-band .legend-line.dashed{border-top-color:#ffffff55}
 .tfex-band .empty-state{color:#93a8c2}
 .tfex-band .panel-heading p{color:#93a8c2}
-@media(max-width:767px){.tfex-band .band-grid{grid-template-columns:1fr}}.profile-text{min-width:0;flex:1}.profile-name{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.profile small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.logout-button{color:#a5a5b0;padding:6px;border-radius:6px}.logout-button:hover{background:#ffffff14;color:#fff}
+@media(max-width:767px){.tfex-band .band-grid{grid-template-columns:1fr}}
+.metric-columns{display:grid;grid-template-columns:1.7fr 1fr;margin-top:20px}
+.metric-col{padding:0 23px 23px}
+.metric-col:first-child{border-right:1px solid var(--hairline)}
+.metric-col-heading{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted-slate);margin-bottom:14px}
+.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.metric-tile{background:var(--soft-stone);border-radius:16px;padding:16px}
+.metric-tile .k{font-size:11px;color:var(--slate);margin-bottom:10px}
+.metric-tile .v{font-size:22px;font-weight:550;letter-spacing:-.3px;color:var(--ink-black);white-space:nowrap}
+.metric-tile .sub{font-size:10px;color:var(--muted-slate);margin-top:8px;line-height:1.5}
+@media(max-width:1200px){.metric-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:767px){.metric-columns{grid-template-columns:1fr}.metric-col:first-child{border-right:none;border-bottom:1px solid var(--hairline);padding-bottom:20px;margin-bottom:20px}.metric-grid{grid-template-columns:repeat(2,1fr)}.metric-tile .v{font-size:19px}}.profile-text{min-width:0;flex:1}.profile-name{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.profile small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.logout-button{color:#a5a5b0;padding:6px;border-radius:6px}.logout-button:hover{background:#ffffff14;color:#fff}

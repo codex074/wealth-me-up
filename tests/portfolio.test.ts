@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {availableTfexPeriods,blankPortfolio,summarize,tfexPnl,tfexPnlSeries,validatePortfolio,type Portfolio} from '../lib/portfolio.ts';
+import {availableTfexPeriods,blankPortfolio,summarize,tfexPerformance,tfexPnl,tfexPnlSeries,validatePortfolio,type Portfolio} from '../lib/portfolio.ts';
 // Synthetic fixture (formerly the app's sample portfolio); never shipped to users.
 const demoPortfolio:Portfolio={fx:35,platforms:[{id:"dime",name:"Dime!",kind:"แอปลงทุน",notes:""},{id:"innovest",name:"InnovestX",kind:"โบรกเกอร์",notes:""},{id:"kplus",name:"K PLUS",kind:"ธนาคาร",notes:""}],accounts:[{id:"kbank",name:"บัญชีออมทรัพย์กสิกร",bank:"กสิกรไทย",number:"xxx-x-xx458-2",currency:"THB",opening:325000,notes:"ตัวอย่าง"},{id:"scb",name:"บัญชีลงทุนไทย",bank:"ไทยพาณิชย์",number:"xxx-xxx-7291",currency:"THB",opening:247000,notes:"ตัวอย่าง"},{id:"usd",name:"Dime! USD",bank:"Dime!",number:"DEMO-USD",currency:"USD",opening:12500,notes:"ตัวอย่าง"}],trades:[{id:"d1",symbol:"AAPL",name:"Apple Inc.",type:"หุ้นสหรัฐฯ",platform:"dime",account:"usd",currency:"USD",side:"BUY",qty:20,price:185.5,fee:1,date:"2026-08-01",notes:""},{id:"d2",symbol:"NVDA",name:"NVIDIA Corporation",type:"หุ้นสหรัฐฯ",platform:"dime",account:"usd",currency:"USD",side:"BUY",qty:35,price:108.2,fee:1,date:"2026-08-12",notes:""},{id:"d3",symbol:"ADVANC",name:"แอดวานซ์ อินโฟร์ เซอร์วิส",type:"หุ้นไทย",platform:"innovest",account:"scb",currency:"THB",side:"BUY",qty:600,price:245,fee:100,date:"2026-08-18",notes:""},{id:"d4",symbol:"K-USXNDQ",name:"กองทุนเปิดเค ยูเอส หุ้นทุน",type:"กองทุน",platform:"kplus",account:"kbank",currency:"THB",side:"BUY",qty:4200,price:12.8,fee:0,date:"2026-08-25",notes:""}],tfex:[{id:"f1",symbol:"S50U26",platform:"innovest",side:"LONG",qty:2,entry:842.5,exit:855,multiplier:200,fee:140,date:"2026-08-26",closeDate:"2026-08-27",notes:"ตัวอย่าง · ทำตามแผน"},{id:"f2",symbol:"S50U26",platform:"innovest",side:"SHORT",qty:1,entry:860,exit:868,multiplier:200,fee:70,date:"2026-08-28",closeDate:"2026-08-28",notes:"ตัวอย่าง · ตัดขาดทุน"},{id:"f3",symbol:"S50U26",platform:"innovest",side:"LONG",qty:1,entry:850,exit:872,multiplier:200,fee:70,date:"2026-08-29",closeDate:"2026-08-30",notes:"ตัวอย่าง"}],cash:[],quotes:{"AAPL|USD|dime":224.5,"NVDA|USD|dime":131.88,"ADVANC|THB|innovest":284,"K-USXNDQ|THB|kplus":14.36}};
 
@@ -64,6 +64,35 @@ test('availableTfexPeriods lists only years/quarters that have a closed trade, m
   {id:'p3',symbol:'S50U26',platform:'pi',side:'LONG',qty:1,entry:1,exit:2,multiplier:200,fee:0,date:'2026-07-15',closeDate:'2026-08-01',notes:''},
  ]};
  assert.deepEqual(availableTfexPeriods(spread),{years:[2026,2025,2024],quarters:[{year:2026,quarter:3},{year:2025,quarter:4},{year:2024,quarter:1}]});
+});
+test('tfexPerformance derives rate, ratio, streak, holding-period, and drawdown metrics from closed trades, chronologically by close date',()=>{
+ const p=tfexPerformance(demoPortfolio);
+ assert.equal(p.closed,3);assert.equal(p.won,2);assert.equal(p.lost,1);
+ assert.ok(Math.abs(p.winRate!-200/3)<1e-9);
+ assert.ok(Math.abs(p.profitFactor!-9190/1670)<1e-9);
+ assert.ok(Math.abs(p.expectancy!-7520/3)<1e-9);
+ assert.ok(Math.abs(p.payoffRatio!-(4595/1670))<1e-9);
+ assert.equal(p.largestWin,4860);assert.equal(p.largestLoss,-1670);
+ assert.equal(p.maxConsecutiveLosses,1);
+ assert.ok(Math.abs(p.avgHoldingDays!-2/3)<1e-9);
+ assert.equal(p.feeDrag,280);
+ assert.equal(p.maxDrawdown,1670);assert.equal(p.currentDrawdown,0);
+ assert.ok(Math.abs(p.recoveryFactor!-7520/1670)<1e-9);
+});
+test('tfexPerformance returns null ratios (not NaN/Infinity) with zero closed trades, and zero for counts/sums',()=>{
+ const p=tfexPerformance(blankPortfolio());
+ assert.deepEqual(p,{closed:0,won:0,lost:0,winRate:null,profitFactor:null,expectancy:null,payoffRatio:null,largestWin:null,largestLoss:null,maxConsecutiveLosses:0,avgHoldingDays:null,feeDrag:0,maxDrawdown:0,currentDrawdown:0,recoveryFactor:null});
+});
+test('tfexPerformance nulls profitFactor/payoffRatio/recoveryFactor/largestLoss when every closed trade wins',()=>{
+ const d:Portfolio={...blankPortfolio(),tfex:[
+  {id:'w1',symbol:'S50U26',platform:'pi',side:'LONG',qty:1,entry:100,exit:110,multiplier:200,fee:0,date:'2026-02-01',closeDate:'2026-02-01',notes:''},
+  {id:'w2',symbol:'S50U26',platform:'pi',side:'LONG',qty:1,entry:100,exit:120,multiplier:200,fee:0,date:'2026-02-02',closeDate:'2026-02-02',notes:''},
+ ]};
+ const p=tfexPerformance(d);
+ assert.equal(p.won,2);assert.equal(p.lost,0);
+ assert.equal(p.profitFactor,null);assert.equal(p.payoffRatio,null);assert.equal(p.recoveryFactor,null);
+ assert.equal(p.largestLoss,null);assert.equal(p.largestWin,4000);
+ assert.equal(p.maxDrawdown,0);assert.equal(p.currentDrawdown,0);assert.equal(p.maxConsecutiveLosses,0);
 });
 test('availableTfexPeriods dedupes a quarter shared by trades closing in different months, and returns empty lists otherwise',()=>{
  const d:Portfolio={...blankPortfolio(),tfex:[

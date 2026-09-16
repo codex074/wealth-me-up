@@ -54,6 +54,46 @@ export function tfexPnlSeries(data:Portfolio, scope:TfexScope):TfexPnlPoint[]{
  }
  return points;
 }
+export type TfexPerformance = {
+ closed:number, won:number, lost:number,
+ winRate:number|null, profitFactor:number|null, expectancy:number|null, payoffRatio:number|null,
+ largestWin:number|null, largestLoss:number|null, maxConsecutiveLosses:number,
+ avgHoldingDays:number|null, feeDrag:number,
+ maxDrawdown:number, currentDrawdown:number, recoveryFactor:number|null,
+};
+/** All-time performance/risk metrics for closed TFEX trades. Unscoped by period (mirrors
+ * summarize()'s stat cards, not the chart's period picker), ordered chronologically by close
+ * date for the streak and drawdown calculations. Ratios that are undefined at the current
+ * sample size (e.g. no losing trades yet) return null rather than NaN/Infinity.
+ */
+export function tfexPerformance(data:Portfolio):TfexPerformance{
+ const closedTrades=[...data.tfex.filter(t=>t.exit!==null)].sort((a,b)=>a.closeDate!.localeCompare(b.closeDate!));
+ const closed=closedTrades.length;
+ const pnls=closedTrades.map(t=>tfexPnl(t)!);
+ const wins=pnls.filter(p=>p>0),losses=pnls.filter(p=>p<0);
+ const won=wins.length,lost=losses.length;
+ const grossProfit=wins.reduce((s,p)=>s+p,0),grossLoss=-losses.reduce((s,p)=>s+p,0);
+ const totalPnl=pnls.reduce((s,p)=>s+p,0);
+ let streak=0,maxStreak=0;
+ for(const p of pnls){streak=p<0?streak+1:0;if(streak>maxStreak)maxStreak=streak;}
+ let running=0,peak=0,maxDrawdown=0;
+ for(const p of pnls){running+=p;if(running>peak)peak=running;const dd=peak-running;if(dd>maxDrawdown)maxDrawdown=dd;}
+ return {
+  closed,won,lost,
+  winRate:closed?won/closed*100:null,
+  profitFactor:grossLoss>0?grossProfit/grossLoss:null,
+  expectancy:closed?totalPnl/closed:null,
+  payoffRatio:won&&lost?(grossProfit/won)/(grossLoss/lost):null,
+  largestWin:won?Math.max(...wins):null,
+  largestLoss:lost?Math.min(...losses):null,
+  maxConsecutiveLosses:maxStreak,
+  avgHoldingDays:closed?closedTrades.reduce((s,t)=>s+(Date.parse(t.closeDate!)-Date.parse(t.date))/86400000,0)/closed:null,
+  feeDrag:closedTrades.reduce((s,t)=>s+t.fee,0),
+  maxDrawdown,
+  currentDrawdown:peak-running,
+  recoveryFactor:maxDrawdown>0?totalPnl/maxDrawdown:null,
+ };
+}
 /** Years/quarters that have at least one closed TFEX trade, most recent first, for a period picker. */
 export function availableTfexPeriods(data:Portfolio):{years:number[], quarters:{year:number, quarter:1|2|3|4}[]}{
  const closed=data.tfex.filter(t=>t.exit!==null);
